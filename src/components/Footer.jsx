@@ -10,10 +10,10 @@ export default function Footer() {
       <div className="hidden sm:grid w-full mx-auto max-w-6xl px-4 py-10 gap-8 md:grid-cols-3">
         <div>
           <p className="font-display text-xl tracking-widest text-white">
-            VX <span className="text-gold">PERFUMERY</span>
+            EGG<span className="text-gold">YS</span>
           </p>
           <p className="mt-2.5 text-sm leading-relaxed">
-            Curated fine fragrances from the world's greatest houses,
+            Farm-fresh eggs from Ghana's best local producers,
             delivered across Ghana and West Africa.
           </p>
         </div>
@@ -22,18 +22,18 @@ export default function Footer() {
           <p className="text-xs uppercase tracking-[0.2em] text-gold">Contact Us</p>
           <ul className="mt-3 space-y-2 text-sm">
             <li>
-              <a href="tel:+233500008001" className="hover:text-gold transition-colors">
-                Phone: +233 50 000 8001
+              <a href="tel:+233500001234" className="hover:text-gold transition-colors">
+                Phone: +233 50 000 1234
               </a>
             </li>
             <li>
-              <a href="https://wa.me/233500008001" target="_blank" rel="noreferrer" className="hover:text-gold transition-colors">
-                WhatsApp: +233 50 000 8001
+              <a href="https://wa.me/233500001234" target="_blank" rel="noreferrer" className="hover:text-gold transition-colors">
+                WhatsApp: +233 50 000 1234
               </a>
             </li>
             <li>
-              <a href="mailto:vxperfurmery@variablexsolutions.com" className="hover:text-gold transition-colors break-all">
-                Email: vxperfurmery@variablexsolutions.com
+              <a href="mailto:hello@eggys.example.com" className="hover:text-gold transition-colors break-all">
+                Email: hello@eggys.example.com
               </a>
             </li>
           </ul>
@@ -55,18 +55,18 @@ export default function Footer() {
       {/* Condensed footer — phone screens only */}
       <div className="sm:hidden w-full mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <p className="font-display text-base tracking-widest text-white">
-          VX <span className="text-gold">PERFUMERY</span>
+          EGG<span className="text-gold">YS</span>
         </p>
         <div className="flex items-center gap-1">
           <a
-            href="tel:+233500008001"
+            href="tel:+233500001234"
             aria-label="Call us"
             className="flex h-11 w-11 items-center justify-center text-white/70 hover:text-gold transition-colors"
           >
             <Phone size={18} />
           </a>
           <a
-            href="https://wa.me/233500008001"
+            href="https://wa.me/233500001234"
             target="_blank"
             rel="noreferrer"
             aria-label="Message us on WhatsApp"
@@ -79,7 +79,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <p className="w-full mx-auto max-w-6xl px-4 py-2 sm:py-4 text-center text-[11px] sm:text-xs text-white/40">
-          © {new Date().getFullYear()} VX Perfumery · Fine Fragrances · Secured payments by Paystack
+          © {new Date().getFullYear()} Eggys · Farm-Fresh Eggs · Secured payments by Paystack
         </p>
       </div>
     </footer>

@@ -106,7 +106,7 @@ export default function AdminLayout() {
     if (titleFlashRef.current) return;
     let showAlert = true;
     titleFlashRef.current = setInterval(() => {
-      document.title = showAlert ? '🔔 New order — VX Admin' : originalTitleRef.current;
+      document.title = showAlert ? '🔔 New order — Eggys Admin' : originalTitleRef.current;
       showAlert = !showAlert;
     }, 1000);
   };

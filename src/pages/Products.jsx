@@ -14,7 +14,7 @@ export default function Products() {
   const [search, setSearch] = useState('');
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
-  const [gender, setGender] = useState('');
+  const [eggType, setEggType] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Products() {
   // reset to first page when filters change
   useEffect(() => {
     setPage(1);
-  }, [search, brand, category, gender]);
+  }, [search, brand, category, eggType]);
 
   useEffect(() => {
     setLoading(true);
@@ -33,7 +33,7 @@ export default function Products() {
     if (search) params.search = search;
     if (brand) params.brand = brand;
     if (category) params.category = category;
-    if (gender) params.gender = gender;
+    if (eggType) params.eggType = eggType;
     const timer = setTimeout(() => {
       api.get('/products', { params })
         .then((res) => {
@@ -44,7 +44,7 @@ export default function Products() {
         .finally(() => setLoading(false));
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, brand, category, gender, page]);
+  }, [search, brand, category, eggType, page]);
 
   return (
     <div className="w-full mx-auto max-w-6xl px-4 py-10">
@@ -68,32 +68,34 @@ export default function Products() {
               {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">For
+          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Egg type
             <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              value={eggType}
+              onChange={(e) => setEggType(e.target.value)}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
             >
-              <option value="">Everyone</option>
-              <option value="male">Him</option>
-              <option value="female">Her</option>
-              <option value="unisex">Unisex</option>
+              <option value="">All types</option>
+              <option value="chicken">Chicken</option>
+              <option value="duck">Duck</option>
+              <option value="quail">Quail</option>
+              <option value="guinea_fowl">Guinea Fowl</option>
+              <option value="turkey">Turkey</option>
             </select>
           </label>
-          <label className="col-span-2 sm:col-span-1 flex flex-col gap-1 text-xs font-medium text-black/60">Scent family
+          <label className="col-span-2 sm:col-span-1 flex flex-col gap-1 text-xs font-medium text-black/60">Category
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
             >
-              <option value="">All scent families</option>
+              <option value="">All categories</option>
               {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
             </select>
           </label>
         </div>
         {total > 0 && (
           <span className="text-sm text-black/40 sm:pb-2">
-            Showing {products.length} of {total} perfumes
+            Showing {products.length} of {total} products
           </span>
         )}
       </div>
@@ -118,7 +120,7 @@ export default function Products() {
           )}
         </>
       ) : (
-        <p className="mt-12 text-center text-black/40">No perfumes found.</p>
+        <p className="mt-12 text-center text-black/40">No products found.</p>
       )}
 
       <CartFab />

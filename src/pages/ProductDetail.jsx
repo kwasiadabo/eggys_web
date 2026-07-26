@@ -8,6 +8,9 @@ import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
 import CartFab from '../components/CartFab';
 
+const EGG_TYPE_LABELS = { chicken: 'Chicken', duck: 'Duck', quail: 'Quail', guinea_fowl: 'Guinea Fowl', turkey: 'Turkey' };
+const FARMING_LABELS = { free_range: 'Free Range', organic: 'Organic', caged: 'Caged', pasture_raised: 'Pasture Raised' };
+
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -36,10 +39,10 @@ export default function ProductDetail() {
   if (!product) return <p className="text-center py-20 text-black/40">Loading…</p>;
 
   const inStock = (product.Inventory?.quantityInStock ?? 0) > 0;
-  const notes = [
-    ['Top', product.topNotes],
-    ['Heart', product.heartNotes],
-    ['Base', product.baseNotes],
+  const specs = [
+    ['Egg Type', EGG_TYPE_LABELS[product.eggType]],
+    ['Grade', product.gradeSize?.replace(/_/g, ' ')],
+    ['Farming Method', FARMING_LABELS[product.farmingMethod]],
   ].filter(([, v]) => v);
 
   return (
@@ -48,21 +51,21 @@ export default function ProductDetail() {
         {product.imageUrl ? (
           <img src={resolveAssetUrl(product.imageUrl)} alt={product.name} className="w-full h-full object-cover" />
         ) : (
-          <span className="font-display text-6xl text-black/10">VX</span>
+          <span className="font-display text-6xl text-black/10">E</span>
         )}
       </div>
       <div>
         <p className="text-xs uppercase tracking-widest text-gold">{product.Brand?.name}</p>
         <h1 className="font-display text-4xl mt-2">{product.name}</h1>
         <p className="text-sm text-black/40 mt-1">
-          {product.volumeMl && `${product.volumeMl}ml · `}{product.fragranceType?.replace(/_/g, ' ')}
+          {product.packSize && `${product.packSize}-pack · `}{EGG_TYPE_LABELS[product.eggType]}
         </p>
         <p className="text-2xl mt-4">GHS {money(product.price)}</p>
         <p className="mt-4 text-black/70 leading-relaxed">{product.description}</p>
 
-        {notes.length > 0 && (
+        {specs.length > 0 && (
           <div className="mt-6 space-y-1">
-            {notes.map(([label, value]) => (
+            {specs.map(([label, value]) => (
               <p key={label} className="text-sm">
                 <span className="text-gold uppercase text-xs tracking-widest mr-2">{label}</span>
                 {value}

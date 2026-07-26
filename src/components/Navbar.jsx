@@ -32,7 +32,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur border-b border-black/10">
       <div className="w-full mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
         <Link to="/" onClick={closeMenu} className="font-display text-2xl tracking-widest">
-          VX <span className="text-gold">PERFUMERY</span>
+          EGG<span className="text-gold">YS</span>
         </Link>
 
         {/* Desktop nav */}

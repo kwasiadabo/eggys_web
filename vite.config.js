@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
-	const apiOrigin = (env.VITE_API_URL || 'https://vxperfumery.onrender.com/api').replace(/\/api\/?$/, '');
+	const apiOrigin = (env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
 
 	return {
 		plugins: [
@@ -19,11 +19,11 @@ export default defineConfig(({ mode }) => {
 					overrideManifestIcons: true,
 				},
 				manifest: {
-					name: 'VX Perfumery',
-					short_name: 'VX Perfumery',
-					description: 'Curated fine fragrances from the world\'s finest houses.',
-					theme_color: '#1a1714',
-					background_color: '#faf7f2',
+					name: 'Eggys',
+					short_name: 'Eggys',
+					description: 'Farm-fresh eggs, delivered from Ghana\'s best local producers.',
+					theme_color: '#2b2118',
+					background_color: '#fff8ec',
 					display: 'standalone',
 					start_url: '/',
 					scope: '/',

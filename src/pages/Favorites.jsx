@@ -31,7 +31,7 @@ export default function Favorites() {
         </div>
       ) : (
         <p className="mt-8 text-black/40 text-sm">
-          Nothing saved yet — tap ♡ on any perfume to keep it here.
+          Nothing saved yet — tap ♡ on any product to keep it here.
         </p>
       )}
     </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiBaseUrl = import.meta.env.VITE_API_URL || '/api';
-// Origin the backend serves /uploads from — e.g. https://vxperfumery.onrender.com
+// Origin the backend serves /uploads from — e.g. https://eggys-api.onrender.com
 const apiOrigin = apiBaseUrl.replace(/\/api\/?$/, '');
 
 const api = axios.create({ baseURL: apiBaseUrl });

@@ -6,20 +6,19 @@ import { useToastStore } from '../../store/toastStore';
 import { money } from '../../lib/format';
 
 const emptyForm = {
-  sku: '', name: '', description: '', price: '', volumeMl: '',
-  fragranceType: 'eau_de_parfum', gender: 'unisex',
-  topNotes: '', heartNotes: '', baseNotes: '',
+  sku: '', name: '', description: '', price: '', packSize: '',
+  eggType: 'chicken', farmingMethod: 'free_range', gradeSize: 'medium',
   imageUrl: '', brandId: '', categoryId: '', quantityInStock: 0,
 };
 
-const GENDER_LABELS = { male: 'Men', female: 'Women', unisex: 'Unisex' };
+const EGG_TYPE_LABELS = { chicken: 'Chicken', duck: 'Duck', quail: 'Quail', guinea_fowl: 'Guinea Fowl', turkey: 'Turkey' };
 
-// "Dior" + "Sauvage Eau de Parfum" + 100 -> "DIOR-SAUV-EAU-DE-PARF-100"
-function generateSku(brandName, name, volumeMl) {
+// "Sunrise Farms" + "Free-Range Chicken Eggs (12-pack)" + 12 -> "SUNR-FREE-RANG-CHIC-12"
+function generateSku(brandName, name, packSize) {
   const clean = (s) => s.replace(/[^a-z0-9 ]/gi, '').trim().split(/\s+/).filter(Boolean);
   const brandPart = clean(brandName)[0]?.slice(0, 6).toUpperCase() || '';
   const namePart = clean(name).map((w) => w.slice(0, 4).toUpperCase()).slice(0, 4).join('-');
-  return [brandPart, namePart, volumeMl || null].filter(Boolean).join('-');
+  return [brandPart, namePart, packSize || null].filter(Boolean).join('-');
 }
 
 export default function AdminProducts() {
@@ -36,7 +35,7 @@ export default function AdminProducts() {
   const [imageFile, setImageFile] = useState(null);
   const [skuTouched, setSkuTouched] = useState(false);
   const [message, setMessage] = useState('');
-  const [filters, setFilters] = useState({ search: '', brand: '', gender: '' });
+  const [filters, setFilters] = useState({ search: '', brand: '', eggType: '' });
   const formRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -44,7 +43,7 @@ export default function AdminProducts() {
     const params = { pageSize: 200 };
     if (filters.search) params.search = filters.search;
     if (filters.brand) params.brand = filters.brand;
-    if (filters.gender) params.gender = filters.gender;
+    if (filters.eggType) params.eggType = filters.eggType;
     api.get('/products', { params }).then((res) => {
       setProducts(res.data.products);
       setTotal(res.data.total);
@@ -67,8 +66,8 @@ export default function AdminProducts() {
   useEffect(() => {
     if (editing || skuTouched || !form.name) return;
     const brandName = brands.find((b) => b.id === form.brandId)?.name || '';
-    setForm((f) => ({ ...f, sku: generateSku(brandName, f.name, f.volumeMl) }));
-  }, [form.name, form.brandId, form.volumeMl, brands, editing, skuTouched]); // eslint-disable-line react-hooks/exhaustive-deps
+    setForm((f) => ({ ...f, sku: generateSku(brandName, f.name, f.packSize) }));
+  }, [form.name, form.brandId, form.packSize, brands, editing, skuTouched]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user?.isAdmin) return null;
 
@@ -91,12 +90,10 @@ export default function AdminProducts() {
       name: product.name,
       description: product.description || '',
       price: product.price,
-      volumeMl: product.volumeMl || '',
-      fragranceType: product.fragranceType || 'eau_de_parfum',
-      gender: product.gender || 'unisex',
-      topNotes: product.topNotes || '',
-      heartNotes: product.heartNotes || '',
-      baseNotes: product.baseNotes || '',
+      packSize: product.packSize || '',
+      eggType: product.eggType || 'chicken',
+      farmingMethod: product.farmingMethod || 'free_range',
+      gradeSize: product.gradeSize || 'medium',
       imageUrl: product.imageUrl || '',
       brandId: product.BrandId || '',
       categoryId: product.CategoryId || '',
@@ -118,7 +115,7 @@ export default function AdminProducts() {
         const { data } = await api.post('/admin/upload', fd);
         imageUrl = data.url;
       }
-      const payload = { ...form, imageUrl, price: Number(form.price), volumeMl: form.volumeMl ? Number(form.volumeMl) : null };
+      const payload = { ...form, imageUrl, price: Number(form.price), packSize: form.packSize ? Number(form.packSize) : null };
 
       if (editing) {
         delete payload.quantityInStock; // stock changes go through restock below
@@ -150,7 +147,7 @@ export default function AdminProducts() {
       <form ref={formRef} onSubmit={submit} className="mt-8 bg-white border border-black/5 rounded-lg p-6">
         <div className="flex items-center justify-between">
           <p className="text-xs uppercase tracking-[0.2em] text-gold">
-            {editing ? `Editing: ${editing.name}` : 'Add New Perfume'}
+            {editing ? `Editing: ${editing.name}` : 'Add New Egg Product'}
           </p>
           {editing && (
             <button type="button" onClick={resetForm} className="text-xs text-black/40 hover:text-red-500">
@@ -159,7 +156,7 @@ export default function AdminProducts() {
           )}
         </div>
         <div className="mt-4 grid md:grid-cols-3 gap-4">
-          <label className={labelClass}>Perfume name *
+          <label className={labelClass}>Product name *
             <input required value={form.name} onChange={set('name')} className={inputClass} />
           </label>
           <label className={labelClass}>Price (GHS) *
@@ -171,29 +168,40 @@ export default function AdminProducts() {
               {brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
           </label>
-          <label className={labelClass}>Scent family
+          <label className={labelClass}>Category
             <select value={form.categoryId} onChange={set('categoryId')} className={inputClass}>
               <option value="">Select a category</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </label>
-          <label className={labelClass}>Fragrance type
-            <select value={form.fragranceType} onChange={set('fragranceType')} className={inputClass}>
-              <option value="eau_de_parfum">Eau de Parfum</option>
-              <option value="eau_de_toilette">Eau de Toilette</option>
-              <option value="parfum">Parfum</option>
-              <option value="cologne">Cologne</option>
+          <label className={labelClass}>Egg type
+            <select value={form.eggType} onChange={set('eggType')} className={inputClass}>
+              <option value="chicken">Chicken</option>
+              <option value="duck">Duck</option>
+              <option value="quail">Quail</option>
+              <option value="guinea_fowl">Guinea Fowl</option>
+              <option value="turkey">Turkey</option>
             </select>
           </label>
-          <label className={labelClass}>Gender
-            <select value={form.gender} onChange={set('gender')} className={inputClass}>
-              <option value="male">Men</option>
-              <option value="female">Women</option>
-              <option value="unisex">Unisex</option>
+          <label className={labelClass}>Farming method
+            <select value={form.farmingMethod} onChange={set('farmingMethod')} className={inputClass}>
+              <option value="free_range">Free Range</option>
+              <option value="organic">Organic</option>
+              <option value="caged">Caged</option>
+              <option value="pasture_raised">Pasture Raised</option>
             </select>
           </label>
-          <label className={labelClass}>Volume (ml)
-            <input type="number" min="0" value={form.volumeMl} onChange={set('volumeMl')} className={inputClass} />
+          <label className={labelClass}>Grade / size
+            <select value={form.gradeSize} onChange={set('gradeSize')} className={inputClass}>
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+              <option value="extra_large">Extra Large</option>
+              <option value="jumbo">Jumbo</option>
+            </select>
+          </label>
+          <label className={labelClass}>Pack size (eggs per carton)
+            <input type="number" min="0" value={form.packSize} onChange={set('packSize')} className={inputClass} />
           </label>
           {editing ? (
             <label className={labelClass}>Add stock (current: {editing.Inventory?.quantityInStock ?? 0})
@@ -205,15 +213,6 @@ export default function AdminProducts() {
               <input type="number" min="0" value={form.quantityInStock} onChange={set('quantityInStock')} className={inputClass} />
             </label>
           )}
-          <label className={labelClass}>Top notes
-            <input value={form.topNotes} onChange={set('topNotes')} className={inputClass} />
-          </label>
-          <label className={labelClass}>Heart notes
-            <input value={form.heartNotes} onChange={set('heartNotes')} className={inputClass} />
-          </label>
-          <label className={labelClass}>Base notes
-            <input value={form.baseNotes} onChange={set('baseNotes')} className={inputClass} />
-          </label>
           <label className={labelClass}>Product image
             <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0] || null)}
               className={`${inputClass} file:mr-2 file:px-3 file:py-1 file:rounded-full file:border-0 file:bg-ink file:text-white file:text-xs`} />
@@ -258,13 +257,15 @@ export default function AdminProducts() {
               {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
             </select>
           </label>
-          <label className={labelClass}>Gender
-            <select value={filters.gender} onChange={setFilter('gender')}
+          <label className={labelClass}>Egg type
+            <select value={filters.eggType} onChange={setFilter('eggType')}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
-              <option value="">All genders</option>
-              <option value="male">Men</option>
-              <option value="female">Women</option>
-              <option value="unisex">Unisex</option>
+              <option value="">All types</option>
+              <option value="chicken">Chicken</option>
+              <option value="duck">Duck</option>
+              <option value="quail">Quail</option>
+              <option value="guinea_fowl">Guinea Fowl</option>
+              <option value="turkey">Turkey</option>
             </select>
           </label>
         </div>
@@ -278,7 +279,7 @@ export default function AdminProducts() {
             <tr>
               <th className="px-3 py-3 font-medium">Product</th>
               <th className="px-3 py-3 font-medium">Brand</th>
-              <th className="px-3 py-3 font-medium">Gender</th>
+              <th className="px-3 py-3 font-medium">Egg type</th>
               <th className="px-3 py-3 font-medium">Price</th>
               <th className="px-3 py-3 font-medium">Stock</th>
               <th className="px-3 py-3 font-medium"></th>
@@ -299,7 +300,7 @@ export default function AdminProducts() {
                   </div>
                 </td>
                 <td className="px-3 py-2.5">{p.Brand?.name}</td>
-                <td className="px-3 py-2.5">{GENDER_LABELS[p.gender] || 'Unisex'}</td>
+                <td className="px-3 py-2.5">{EGG_TYPE_LABELS[p.eggType] || 'Chicken'}</td>
                 <td className="px-3 py-2.5 whitespace-nowrap">GHS {money(p.price)}</td>
                 <td className="px-3 py-2.5">
                   <span className={p.Inventory?.quantityInStock <= 5 ? 'text-red-600 font-medium' : ''}>

@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --color-ink: #1a1714;
-  --color-ink-deep: #100d0b;
-  --color-cream: #faf7f2;
-  --color-gold: #b8933e;
-  --color-gold-light: #d4b878;
+  --color-ink: #2b2118;
+  --color-ink-deep: #1a130d;
+  --color-cream: #fff8ec;
+  --color-gold: #e8a33d;
+  --color-gold-light: #f4c876;
 }
 
 body {

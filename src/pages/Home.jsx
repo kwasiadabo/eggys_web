@@ -16,12 +16,12 @@ export default function Home() {
     <div>
       <section className="bg-ink text-white">
         <div className="w-full mx-auto max-w-6xl px-4 py-24 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold-light">Fine Fragrances</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-gold-light">Farm-Fresh Eggs</p>
           <h1 className="font-display text-5xl md:text-6xl mt-4 leading-tight">
-            Discover Your Signature Scent
+            Fresh From the Farm, To Your Door
           </h1>
           <p className="mt-4 text-white/60 max-w-xl mx-auto">
-            Curated perfumes from the world's finest houses, delivered to your door.
+            Farm-fresh eggs from Ghana's best local producers, delivered to your door.
           </p>
           <Link
             to="/products"

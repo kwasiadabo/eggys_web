@@ -6,6 +6,8 @@ import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
 import { resolveAssetUrl } from '../lib/api';
 
+const EGG_TYPE_LABELS = { chicken: 'Chicken', duck: 'Duck', quail: 'Quail', guinea_fowl: 'Guinea Fowl', turkey: 'Turkey' };
+
 export default function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
   const toast = useToastStore((s) => s.show);
@@ -26,7 +28,7 @@ export default function ProductCard({ product }) {
           {product.imageUrl ? (
             <img src={resolveAssetUrl(product.imageUrl)} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           ) : (
-            <span className="font-display text-4xl text-black/15">VX</span>
+            <span className="font-display text-4xl text-black/15">E</span>
           )}
         </div>
       </Link>
@@ -36,7 +38,7 @@ export default function ProductCard({ product }) {
           <h3 className="font-display text-lg mt-1 leading-snug">{product.name}</h3>
         </Link>
         <p className="text-xs text-black/40 mt-0.5">
-          {product.volumeMl ? `${product.volumeMl}ml` : ''} {product.fragranceType?.replace(/_/g, ' ')}
+          {product.packSize ? `${product.packSize}-pack` : ''} {EGG_TYPE_LABELS[product.eggType] || ''}
         </p>
         <div className="mt-3 flex items-center justify-between">
           <span className="font-medium">GHS {money(product.price)}</span>
