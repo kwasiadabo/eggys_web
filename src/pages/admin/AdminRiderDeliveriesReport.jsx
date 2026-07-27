@@ -52,10 +52,10 @@ export default function AdminRiderDeliveriesReport() {
     }
   };
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
 
   return (
-    <div className="w-full mx-auto max-w-5xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Rider Deliveries Report</h1>
       <p className="mt-2 text-sm text-black/50">
         Deliveries completed by each rider in the selected period, with the amount involved per delivery and
@@ -72,7 +72,7 @@ export default function AdminRiderDeliveriesReport() {
         <button
           onClick={generate}
           disabled={loading}
-          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-50"
+          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-50"
         >
           {loading ? 'Loading…' : 'Generate Report'}
         </button>
@@ -104,7 +104,7 @@ export default function AdminRiderDeliveriesReport() {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-black/40">{group.orders.length} deliveries</p>
-                        <p className="text-sm font-semibold text-gold">GHS {money(riderTotal)}</p>
+                        <p className="text-sm font-semibold text-green">GHS {money(riderTotal)}</p>
                       </div>
                     </div>
                     <table className="w-full text-sm">
@@ -149,7 +149,7 @@ export default function AdminRiderDeliveriesReport() {
               </div>
               <div>
                 <p className="text-black/40">Grand Total Amount</p>
-                <p className="mt-0.5 font-semibold text-gold">GHS {money(report.totals.grandTotal)}</p>
+                <p className="mt-0.5 font-semibold text-green">GHS {money(report.totals.grandTotal)}</p>
               </div>
             </div>
           </>

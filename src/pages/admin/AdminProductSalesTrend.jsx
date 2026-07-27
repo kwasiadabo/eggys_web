@@ -44,7 +44,7 @@ export default function AdminProductSalesTrend() {
     }
   };
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
 
   return (
     <div className="w-full mx-auto max-w-5xl px-4 py-12">
@@ -71,7 +71,7 @@ export default function AdminProductSalesTrend() {
         <button
           onClick={generate}
           disabled={loading}
-          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-50"
+          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-50"
         >
           {loading ? 'Loading…' : 'Generate Chart'}
         </button>
@@ -90,7 +90,7 @@ export default function AdminProductSalesTrend() {
             </div>
             <div>
               <p className="text-black/40">Total Revenue</p>
-              <p className="mt-0.5 font-semibold text-gold">GHS {money(report.totals.totalRevenue)}</p>
+              <p className="mt-0.5 font-semibold text-green">GHS {money(report.totals.totalRevenue)}</p>
             </div>
           </div>
 

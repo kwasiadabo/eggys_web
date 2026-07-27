@@ -5,6 +5,7 @@ import api from '../../lib/api';
 import { useAuthStore } from '../../store/authStore';
 import { useToastStore } from '../../store/toastStore';
 import { confirmDialog } from '../../store/dialogStore';
+import SearchableSelect from '../../components/SearchableSelect';
 
 const badge = {
   pending_delivery: 'bg-blue-100 text-blue-800',
@@ -15,6 +16,11 @@ const statusLabel = {
   pending_delivery: 'Awaiting Dispatch',
   dispatched: 'Out for Delivery',
 };
+
+const mapsUrl = (order) =>
+  order.deliveryLatitude && order.deliveryLongitude
+    ? `https://www.google.com/maps?q=${order.deliveryLatitude},${order.deliveryLongitude}`
+    : null;
 
 export default function AdminDelivery() {
   const user = useAuthStore((s) => s.user);
@@ -83,7 +89,7 @@ export default function AdminDelivery() {
   };
 
   return (
-    <div className="w-full mx-auto max-w-6xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl">Delivery Management</h1>
         <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
@@ -92,19 +98,22 @@ export default function AdminDelivery() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Order #, customer, address…"
-              className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+              className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Rider
-            <select
+            <SearchableSelect
               value={riderFilter}
-              onChange={(e) => setRiderFilter(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
-            >
-              <option value="">All riders</option>
-              <option value="unassigned">Unassigned</option>
-              {riders.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
+              onChange={setRiderFilter}
+              placeholder="All riders"
+              searchPlaceholder="Search riders…"
+              options={[
+                { value: '', label: 'All riders' },
+                { value: 'unassigned', label: 'Unassigned' },
+                ...riders.map((r) => ({ value: r.id, label: r.name })),
+              ]}
+              triggerClassName="w-full sm:w-40 px-4 py-2 rounded-full border border-black/15 bg-white text-sm"
+            />
           </label>
         </div>
       </div>
@@ -112,7 +121,7 @@ export default function AdminDelivery() {
       {unassigned.length > 0 && (
         <p className="mt-4 text-sm bg-blue-50 text-blue-800 rounded-lg px-4 py-3">
           {unassigned.length} paid {unassigned.length === 1 ? 'order has' : 'orders have'} no rider yet —{' '}
-          assign riders on the <Link to="/admin/orders" className="underline hover:text-gold">Orders page</Link>.
+          assign riders on the <Link to="/admin/orders" className="underline hover:text-green">Orders page</Link>.
         </p>
       )}
 
@@ -151,10 +160,15 @@ export default function AdminDelivery() {
                       <span className="text-black/30">Unassigned</span>
                     )}
                   </td>
-                  <td className="px-3 py-3 text-xs text-gold">
+                  <td className="px-3 py-3 text-xs text-green">
                     <span className="inline-flex items-center gap-1">
                       <MapPin size={11} strokeWidth={2} className="shrink-0" /> {order.shippingAddress}
                     </span>
+                    {mapsUrl(order) && (
+                      <a href={mapsUrl(order)} target="_blank" rel="noreferrer" className="ml-1.5 underline hover:no-underline whitespace-nowrap">
+                        Open pin
+                      </a>
+                    )}
                   </td>
                   <td className="px-3 py-3">
                     <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${badge[order.status] || ''}`}>
@@ -166,7 +180,7 @@ export default function AdminDelivery() {
                       <button
                         onClick={() => dispatch(order)}
                         disabled={dispatching === order.id}
-                        className="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-full bg-ink text-white text-xs hover:bg-gold transition-colors disabled:opacity-40"
+                        className="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-full bg-ink text-white text-xs hover:bg-green transition-colors disabled:opacity-40"
                       >
                         {dispatching === order.id ? 'Dispatching…' : 'Dispatch'}
                       </button>

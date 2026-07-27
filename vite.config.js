@@ -5,7 +5,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
-	const apiOrigin = (env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+	const apiOrigin = (env.VITE_API_URL || 'http://localhost:5000/api').replace(
+		/\/api\/?$/,
+		'',
+	);
 
 	return {
 		plugins: [
@@ -21,7 +24,8 @@ export default defineConfig(({ mode }) => {
 				manifest: {
 					name: 'Eggys',
 					short_name: 'Eggys',
-					description: 'Farm-fresh eggs, delivered from Ghana\'s best local producers.',
+					description:
+						"Farm-fresh eggs, delivered from Ghana's best local producers.",
 					theme_color: '#2b2118',
 					background_color: '#fff8ec',
 					display: 'standalone',
@@ -37,7 +41,10 @@ export default defineConfig(({ mode }) => {
 							handler: 'CacheFirst',
 							options: {
 								cacheName: 'google-fonts-stylesheets',
-								expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+								expiration: {
+									maxEntries: 10,
+									maxAgeSeconds: 60 * 60 * 24 * 365,
+								},
 								cacheableResponse: { statuses: [0, 200] },
 							},
 						},
@@ -46,7 +53,10 @@ export default defineConfig(({ mode }) => {
 							handler: 'CacheFirst',
 							options: {
 								cacheName: 'google-fonts-webfonts',
-								expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+								expiration: {
+									maxEntries: 10,
+									maxAgeSeconds: 60 * 60 * 24 * 365,
+								},
 								cacheableResponse: { statuses: [0, 200] },
 							},
 						},
@@ -55,7 +65,7 @@ export default defineConfig(({ mode }) => {
 			}),
 		],
 		server: {
-			port: 5199,
+			port: 5198,
 			strictPort: true,
 			proxy: {
 				'/api': apiOrigin,

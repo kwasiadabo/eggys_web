@@ -33,7 +33,7 @@ export default function TrackOrder() {
     }
   };
 
-  const inputClass = 'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
@@ -65,7 +65,7 @@ export default function TrackOrder() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-40"
+          className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-40"
         >
           {loading ? 'Looking up…' : 'Track Order'}
         </button>
@@ -90,7 +90,7 @@ export default function TrackOrder() {
             ))}
           </ul>
           {order.shippingAddress && (
-            <p className="mt-2 text-sm text-gold flex items-center gap-1.5">
+            <p className="mt-2 text-sm text-green flex items-center gap-1.5">
               <MapPin size={14} strokeWidth={2} className="shrink-0" /> Delivering to: {order.shippingAddress}
             </p>
           )}

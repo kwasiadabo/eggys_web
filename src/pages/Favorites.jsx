@@ -17,7 +17,7 @@ export default function Favorites() {
     return (
       <div className="text-center py-24">
         <h1 className="font-display text-3xl">Sign in to see your favourites</h1>
-        <Link to="/login" className="inline-block mt-6 text-gold hover:underline">Sign in →</Link>
+        <Link to="/login" className="inline-block mt-6 text-green hover:underline">Sign in →</Link>
       </div>
     );
   }

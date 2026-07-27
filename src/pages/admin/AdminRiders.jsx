@@ -60,11 +60,11 @@ export default function AdminRiders() {
     }
   };
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
-    <div className="w-full mx-auto max-w-4xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Delivery Riders</h1>
       <p className="text-sm text-black/40 mt-2">
         New riders receive a 6-digit login PIN by SMS for the Rider Portal. After their first sign-in they're
@@ -80,13 +80,13 @@ export default function AdminRiders() {
           <input required value={form.phoneNumber}
             onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })} className={inputClass} />
         </label>
-        <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+        <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
           Add Rider
         </button>
       </form>
 
       {pinNotice && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm bg-gold/10 border border-gold/30 rounded-lg px-4 py-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm bg-green/10 border border-green/30 rounded-lg px-4 py-3">
           <p>
             {pinNotice.name}'s PIN: <strong className="font-mono text-base">{pinNotice.pin}</strong>
             {' '}— {pinNotice.smsSent
@@ -136,7 +136,7 @@ export default function AdminRiders() {
                   <button
                     onClick={() => resetPin(rider)}
                     disabled={busy === rider.id}
-                    className="text-xs px-4 py-1.5 rounded-full border border-black/15 hover:border-gold hover:text-gold transition-colors disabled:opacity-40"
+                    className="text-xs px-4 py-1.5 rounded-full border border-black/15 hover:border-green hover:text-green transition-colors disabled:opacity-40"
                   >
                     {rider.hasPin ? 'Reset PIN' : 'Issue PIN'}
                   </button>

@@ -58,7 +58,7 @@ export default function ConfirmDialog() {
             type="button"
             onClick={() => resolve(true)}
             className={`px-5 py-2.5 rounded-full text-sm text-white transition-colors ${
-              request.danger ? 'bg-red-600 hover:bg-red-700' : 'bg-ink hover:bg-gold'
+              request.danger ? 'bg-red-600 hover:bg-red-700' : 'bg-ink hover:bg-green'
             }`}
           >
             {request.confirmLabel}

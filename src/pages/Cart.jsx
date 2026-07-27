@@ -11,7 +11,7 @@ export default function Cart() {
     return (
       <div className="text-center py-24">
         <h1 className="font-display text-3xl">Your cart is empty</h1>
-        <Link to="/products" className="inline-block mt-6 text-gold hover:underline">
+        <Link to="/products" className="inline-block mt-6 text-green hover:underline">
           Browse the collection →
         </Link>
       </div>
@@ -30,7 +30,7 @@ export default function Cart() {
                 : <span className="font-display text-black/20">VX</span>}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs uppercase tracking-widest text-gold">{product.Brand?.name}</p>
+              <p className="text-xs uppercase tracking-widest text-green">{product.Brand?.name}</p>
               <p className="font-medium truncate">{product.name}</p>
               <p className="text-sm text-black/50">GHS {money(product.price)}</p>
             </div>
@@ -51,7 +51,7 @@ export default function Cart() {
         <p className="text-lg">Subtotal: <strong>GHS {money(subtotal)}</strong></p>
         <Link
           to="/checkout"
-          className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors"
+          className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors"
         >
           Checkout
         </Link>

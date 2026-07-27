@@ -80,11 +80,11 @@ export default function AdminDeliveryFees() {
     }))
     .filter((g) => g.rows.length);
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
-    <div className="w-full mx-auto max-w-3xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Delivery Fees</h1>
       <p className="text-sm text-black/40 mt-2">
         Fees are set per city or town within each region. "Other" is the fallback fee
@@ -106,7 +106,7 @@ export default function AdminDeliveryFees() {
           <input required type="number" min="0" step="0.01" value={form.fee}
             onChange={(e) => setForm({ ...form, fee: e.target.value })} className={`${inputClass} w-32`} />
         </label>
-        <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+        <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
           Add City Fee
         </button>
       </form>
@@ -114,7 +114,7 @@ export default function AdminDeliveryFees() {
       <div className="mt-8 space-y-6">
         {grouped.map(({ region, rows }) => (
           <div key={region} className="bg-white border border-black/5 rounded-lg overflow-hidden">
-            <p className="px-4 py-3 bg-black/[0.03] text-xs uppercase tracking-[0.2em] text-gold">{region}</p>
+            <p className="px-4 py-3 bg-black/[0.03] text-xs uppercase tracking-[0.2em] text-green">{region}</p>
             <table className="w-full text-sm">
               <tbody>
                 {rows.map((row) => (
@@ -126,14 +126,14 @@ export default function AdminDeliveryFees() {
                       <input
                         type="number" min="0" step="0.01" value={row.fee}
                         onChange={(e) => setFee(row.id, e.target.value)}
-                        className="w-28 px-3 py-1.5 border border-black/15 rounded bg-white text-sm focus:outline-none focus:border-gold"
+                        className="w-28 px-3 py-1.5 border border-black/15 rounded bg-white text-sm focus:outline-none focus:border-green"
                       />
                     </td>
                     <td className="px-4 py-2.5 w-44 text-right whitespace-nowrap">
                       <button
                         onClick={() => save(row)}
                         disabled={busy === row.id}
-                        className="text-xs px-4 py-1.5 rounded-full bg-ink text-white hover:bg-gold transition-colors disabled:opacity-40"
+                        className="text-xs px-4 py-1.5 rounded-full bg-ink text-white hover:bg-green transition-colors disabled:opacity-40"
                       >
                         Save
                       </button>

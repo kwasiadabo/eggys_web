@@ -17,3 +17,10 @@ export function formatDate(value) {
   const month = d.toLocaleString('en-GB', { month: 'short' });
   return `${day}${suffix} ${month} ${d.getFullYear()}`;
 }
+
+// Date + time formatter: "3rd Jan 2000, 2:45 PM"
+export function formatDateTime(value) {
+  if (!value) return '';
+  const time = new Date(value).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  return `${formatDate(value)}, ${time}`;
+}

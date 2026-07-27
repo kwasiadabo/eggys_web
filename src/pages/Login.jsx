@@ -26,7 +26,7 @@ export default function Login() {
   };
 
   const inputClass =
-    'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-gold';
+    'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
@@ -56,13 +56,13 @@ export default function Login() {
           <input required type="password" value={form.password} onChange={set('password')} className={inputClass} />
         </label>
         {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button type="submit" className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+        <button type="submit" className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
           {mode === 'login' ? 'Sign In' : 'Create Account'}
         </button>
       </form>
       <button
         onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-        className="mt-4 w-full text-center text-sm text-black/50 hover:text-gold"
+        className="mt-4 w-full text-center text-sm text-black/50 hover:text-green"
       >
         {mode === 'login' ? "New here? Create an account" : 'Already have an account? Sign in'}
         </button>

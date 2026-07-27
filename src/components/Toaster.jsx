@@ -2,7 +2,7 @@ import { Check, CircleAlert, Info } from 'lucide-react';
 import { useToastStore } from '../store/toastStore';
 
 const ICONS = {
-  success: <Check size={15} strokeWidth={2.5} className="text-gold-light" />,
+  success: <Check size={15} strokeWidth={2.5} className="text-green-light" />,
   error: <CircleAlert size={15} strokeWidth={2} className="text-red-400" />,
   info: <Info size={15} strokeWidth={2} className="text-white/70" />,
 };

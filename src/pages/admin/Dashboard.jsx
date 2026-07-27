@@ -43,7 +43,7 @@ export default function Dashboard() {
   if (!user?.isAdmin) return null;
 
   return (
-    <div className="w-full mx-auto max-w-6xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Admin Dashboard</h1>
 
       {data ? (

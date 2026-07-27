@@ -59,14 +59,14 @@ export default function Account() {
 
   if (!user) return null;
 
-  const filterInput = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const filterInput = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
 
   return (
     <div className="w-full mx-auto max-w-3xl px-4 py-12">
       <h1 className="font-display text-4xl">Hello, {user.firstName}</h1>
 
       <div className="mt-8 bg-white border border-black/5 rounded-lg p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-gold">Account Details</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-green">Account Details</p>
         <div className="mt-3 grid sm:grid-cols-3 gap-4 text-sm">
           <div>
             <p className="text-black/40">Name</p>
@@ -132,7 +132,7 @@ export default function Account() {
                 ))}
               </ul>
               {order.shippingAddress && (
-                <p className="mt-2 text-sm text-gold flex items-center gap-1.5">
+                <p className="mt-2 text-sm text-green flex items-center gap-1.5">
                   <MapPin size={14} strokeWidth={2} className="shrink-0" /> Delivering to: {order.shippingAddress}
                 </p>
               )}

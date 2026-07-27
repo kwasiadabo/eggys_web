@@ -67,7 +67,7 @@ const ACCORDIONS = [
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
-    isActive ? 'bg-gold/20 text-gold-light font-medium' : 'text-white/60 hover:text-white hover:bg-white/5'
+    isActive ? 'bg-green/20 text-green-light font-medium' : 'text-white/60 hover:text-white hover:bg-white/5'
   }`;
 
 export default function AdminLayout() {
@@ -157,7 +157,7 @@ export default function AdminLayout() {
                   <item.icon size={17} strokeWidth={1.75} className="shrink-0" />
                   <span className="whitespace-nowrap flex-1">{item.label}</span>
                   {badgeCount > 0 && (
-                    <span className="min-w-5 h-5 px-1.5 rounded-full bg-gold text-ink text-[11px] font-semibold flex items-center justify-center">
+                    <span className="min-w-5 h-5 px-1.5 rounded-full bg-green text-ink text-[11px] font-semibold flex items-center justify-center">
                       {badgeCount > 99 ? '99+' : badgeCount}
                     </span>
                   )}
@@ -175,7 +175,7 @@ export default function AdminLayout() {
                     type="button"
                     onClick={() => toggleAccordion(acc.key)}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors text-left ${
-                      isActive ? 'text-gold-light' : 'text-white/60 hover:text-white hover:bg-white/5'
+                      isActive ? 'text-green-light' : 'text-white/60 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <acc.icon size={17} strokeWidth={1.75} className="shrink-0" />

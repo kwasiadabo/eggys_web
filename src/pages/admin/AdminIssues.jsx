@@ -104,8 +104,8 @@ export default function AdminIssues() {
               <p className="mt-2 text-sm text-black/70">{issue.description}</p>
 
               {issue.adminResponse && (
-                <div className="mt-3 pl-3 border-l-2 border-gold">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gold">Our Response</p>
+                <div className="mt-3 pl-3 border-l-2 border-green">
+                  <p className="text-xs uppercase tracking-[0.2em] text-green">Our Response</p>
                   <p className="mt-1 text-sm text-black/70">{issue.adminResponse}</p>
                 </div>
               )}
@@ -116,13 +116,13 @@ export default function AdminIssues() {
                   value={drafts[issue.id] ?? ''}
                   onChange={(e) => setDrafts((d) => ({ ...d, [issue.id]: e.target.value }))}
                   placeholder="Write a response…"
-                  className="flex-1 px-3 py-2 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-gold"
+                  className="flex-1 px-3 py-2 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-green"
                 />
                 <div className="flex sm:flex-col gap-2">
                   <button
                     disabled={saving === issue.id}
                     onClick={() => respond(issue, 'resolved')}
-                    className="px-4 py-2 rounded-full bg-ink text-white text-xs hover:bg-gold transition-colors disabled:opacity-50 whitespace-nowrap"
+                    className="px-4 py-2 rounded-full bg-ink text-white text-xs hover:bg-green transition-colors disabled:opacity-50 whitespace-nowrap"
                   >
                     Send &amp; resolve
                   </button>

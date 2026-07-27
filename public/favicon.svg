@@ -2,14 +2,10 @@
   <rect width="512" height="512" fill="#2b2118"/>
   <ellipse cx="256" cy="290" rx="118" ry="150" fill="#f4c876"/>
   <ellipse cx="256" cy="270" rx="118" ry="140" fill="#e8a33d"/>
-  <text
-    x="256"
-    y="300"
-    text-anchor="middle"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="150"
-    font-weight="600"
-    letter-spacing="2"
-    fill="#2b2118"
-  >E</text>
+  <g fill="#2b2118" opacity="0.55">
+    <circle cx="212" cy="220" r="10"/>
+    <circle cx="292" cy="245" r="7"/>
+    <circle cx="248" cy="300" r="8.5"/>
+    <circle cx="300" cy="330" r="6"/>
+  </g>
 </svg>

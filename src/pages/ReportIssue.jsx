@@ -65,7 +65,7 @@ export default function ReportIssue() {
   };
 
   const inputClass =
-    'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-gold';
+    'w-full px-4 py-3 border border-black/15 rounded-lg bg-white text-sm focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
@@ -105,7 +105,7 @@ export default function ReportIssue() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-50"
+          className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-50"
         >
           {submitting ? 'Submitting…' : 'Submit Report'}
         </button>
@@ -130,8 +130,8 @@ export default function ReportIssue() {
               </p>
               <p className="mt-2 text-sm text-black/70">{issue.description}</p>
               {issue.adminResponse && (
-                <div className="mt-3 pl-3 border-l-2 border-gold">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gold">Our Response</p>
+                <div className="mt-3 pl-3 border-l-2 border-green">
+                  <p className="text-xs uppercase tracking-[0.2em] text-green">Our Response</p>
                   <p className="mt-1 text-sm text-black/70">{issue.adminResponse}</p>
                 </div>
               )}

@@ -8,17 +8,16 @@ import { money } from '../../lib/format';
 const emptyForm = {
   sku: '', name: '', description: '', price: '', packSize: '',
   eggType: 'chicken', farmingMethod: 'free_range', gradeSize: 'medium',
-  imageUrl: '', brandId: '', categoryId: '', quantityInStock: 0,
+  imageUrl: '', quantityInStock: 0,
 };
 
 const EGG_TYPE_LABELS = { chicken: 'Chicken', duck: 'Duck', quail: 'Quail', guinea_fowl: 'Guinea Fowl', turkey: 'Turkey' };
 
-// "Sunrise Farms" + "Free-Range Chicken Eggs (12-pack)" + 12 -> "SUNR-FREE-RANG-CHIC-12"
-function generateSku(brandName, name, packSize) {
+// "Free-Range Chicken Eggs (12-pack)" + 12 -> "FREE-RANG-CHIC-12"
+function generateSku(name, packSize) {
   const clean = (s) => s.replace(/[^a-z0-9 ]/gi, '').trim().split(/\s+/).filter(Boolean);
-  const brandPart = clean(brandName)[0]?.slice(0, 6).toUpperCase() || '';
   const namePart = clean(name).map((w) => w.slice(0, 4).toUpperCase()).slice(0, 4).join('-');
-  return [brandPart, namePart, packSize || null].filter(Boolean).join('-');
+  return [namePart, packSize || null].filter(Boolean).join('-');
 }
 
 export default function AdminProducts() {
@@ -27,22 +26,19 @@ export default function AdminProducts() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-  const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState(null); // product being edited, or null = add mode
   const [restockQty, setRestockQty] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [skuTouched, setSkuTouched] = useState(false);
   const [message, setMessage] = useState('');
-  const [filters, setFilters] = useState({ search: '', brand: '', eggType: '' });
+  const [filters, setFilters] = useState({ search: '', eggType: '' });
   const formRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const loadProducts = () => {
     const params = { pageSize: 200 };
     if (filters.search) params.search = filters.search;
-    if (filters.brand) params.brand = filters.brand;
     if (filters.eggType) params.eggType = filters.eggType;
     api.get('/products', { params }).then((res) => {
       setProducts(res.data.products);
@@ -52,8 +48,6 @@ export default function AdminProducts() {
 
   useEffect(() => {
     if (!user?.isAdmin) return navigate('/');
-    api.get('/brands').then((res) => setBrands(res.data));
-    api.get('/categories').then((res) => setCategories(res.data));
   }, [user, navigate]);
 
   useEffect(() => {
@@ -65,9 +59,8 @@ export default function AdminProducts() {
   // Auto-generate the SKU while adding, unless the admin typed one manually
   useEffect(() => {
     if (editing || skuTouched || !form.name) return;
-    const brandName = brands.find((b) => b.id === form.brandId)?.name || '';
-    setForm((f) => ({ ...f, sku: generateSku(brandName, f.name, f.packSize) }));
-  }, [form.name, form.brandId, form.packSize, brands, editing, skuTouched]); // eslint-disable-line react-hooks/exhaustive-deps
+    setForm((f) => ({ ...f, sku: generateSku(f.name, f.packSize) }));
+  }, [form.name, form.packSize, editing, skuTouched]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user?.isAdmin) return null;
 
@@ -95,8 +88,6 @@ export default function AdminProducts() {
       farmingMethod: product.farmingMethod || 'free_range',
       gradeSize: product.gradeSize || 'medium',
       imageUrl: product.imageUrl || '',
-      brandId: product.BrandId || '',
-      categoryId: product.CategoryId || '',
       quantityInStock: product.Inventory?.quantityInStock ?? 0,
     });
     setRestockQty('');
@@ -136,17 +127,17 @@ export default function AdminProducts() {
     }
   };
 
-  const inputClass = 'px-3 py-2 border border-black/15 rounded bg-white text-sm w-full focus:outline-none focus:border-gold';
+  const inputClass = 'px-3 py-2 border border-black/15 rounded bg-white text-sm w-full focus:outline-none focus:border-green';
   const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
   return (
-    <div className="w-full mx-auto max-w-6xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Products</h1>
 
       {/* Add / edit form */}
       <form ref={formRef} onSubmit={submit} className="mt-8 bg-white border border-black/5 rounded-lg p-6">
         <div className="flex items-center justify-between">
-          <p className="text-xs uppercase tracking-[0.2em] text-gold">
+          <p className="text-xs uppercase tracking-[0.2em] text-green">
             {editing ? `Editing: ${editing.name}` : 'Add New Egg Product'}
           </p>
           {editing && (
@@ -161,18 +152,6 @@ export default function AdminProducts() {
           </label>
           <label className={labelClass}>Price (GHS) *
             <input required type="number" step="0.01" min="0" value={form.price} onChange={set('price')} className={inputClass} />
-          </label>
-          <label className={labelClass}>Brand
-            <select value={form.brandId} onChange={set('brandId')} className={inputClass}>
-              <option value="">Select a brand</option>
-              {brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-            </select>
-          </label>
-          <label className={labelClass}>Category
-            <select value={form.categoryId} onChange={set('categoryId')} className={inputClass}>
-              <option value="">Select a category</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
           </label>
           <label className={labelClass}>Egg type
             <select value={form.eggType} onChange={set('eggType')} className={inputClass}>
@@ -233,7 +212,7 @@ export default function AdminProducts() {
           </label>
         </div>
         <div className="mt-4 flex items-center gap-3">
-          <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+          <button type="submit" className="px-6 py-2 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
             {editing ? 'Save Changes' : 'Add Product'}
           </button>
           {message && <span className="text-sm text-red-600">{message}</span>}
@@ -246,17 +225,10 @@ export default function AdminProducts() {
           <input
             value={filters.search}
             onChange={setFilter('search')}
-            className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+            className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
           />
         </label>
         <div className="grid grid-cols-2 gap-3 sm:contents">
-          <label className={labelClass}>Brand
-            <select value={filters.brand} onChange={setFilter('brand')}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
-              <option value="">All brands</option>
-              {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
-            </select>
-          </label>
           <label className={labelClass}>Egg type
             <select value={filters.eggType} onChange={setFilter('eggType')}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none">
@@ -278,7 +250,6 @@ export default function AdminProducts() {
           <thead className="bg-black/[0.03] text-left">
             <tr>
               <th className="px-3 py-3 font-medium">Product</th>
-              <th className="px-3 py-3 font-medium">Brand</th>
               <th className="px-3 py-3 font-medium">Egg type</th>
               <th className="px-3 py-3 font-medium">Price</th>
               <th className="px-3 py-3 font-medium">Stock</th>
@@ -287,7 +258,7 @@ export default function AdminProducts() {
           </thead>
           <tbody>
             {products.map((p) => (
-              <tr key={p.id} className={`border-t border-black/5 ${editing?.id === p.id ? 'bg-gold/5' : ''}`}>
+              <tr key={p.id} className={`border-t border-black/5 ${editing?.id === p.id ? 'bg-green/5' : ''}`}>
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-black/5 rounded overflow-hidden shrink-0">
@@ -299,7 +270,6 @@ export default function AdminProducts() {
                     </div>
                   </div>
                 </td>
-                <td className="px-3 py-2.5">{p.Brand?.name}</td>
                 <td className="px-3 py-2.5">{EGG_TYPE_LABELS[p.eggType] || 'Chicken'}</td>
                 <td className="px-3 py-2.5 whitespace-nowrap">GHS {money(p.price)}</td>
                 <td className="px-3 py-2.5">
@@ -309,7 +279,7 @@ export default function AdminProducts() {
                 </td>
                 <td className="px-3 py-2.5 text-right">
                   <button onClick={() => startEdit(p)}
-                    className="text-xs px-4 py-1.5 rounded-full border border-black/15 hover:border-gold hover:text-gold transition-colors">
+                    className="text-xs px-4 py-1.5 rounded-full border border-black/15 hover:border-green hover:text-green transition-colors">
                     Edit
                   </button>
                 </td>

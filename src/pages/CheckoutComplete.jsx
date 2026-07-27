@@ -65,10 +65,10 @@ export default function CheckoutComplete() {
               A confirmation SMS is on its way. We'll text you again when your order ships.
             </p>
             <div className="mt-8 flex justify-center gap-3">
-              <Link to="/products" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+              <Link to="/products" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
                 Continue Shopping
               </Link>
-              <Link to="/account" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-gold hover:text-gold transition-colors">
+              <Link to="/account" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-green hover:text-green transition-colors">
                 View My Orders
               </Link>
             </div>
@@ -88,10 +88,10 @@ export default function CheckoutComplete() {
               If you completed payment, it may take a moment to reflect.
             </p>
             <div className="mt-8 flex justify-center gap-3">
-              <Link to="/account" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+              <Link to="/account" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
                 Check My Orders
               </Link>
-              <Link to="/products" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-gold hover:text-gold transition-colors">
+              <Link to="/products" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-green hover:text-green transition-colors">
                 Back to Shop
               </Link>
             </div>
@@ -106,10 +106,10 @@ export default function CheckoutComplete() {
               check your orders or contact us and we'll sort it out.
             </p>
             <div className="mt-8 flex justify-center gap-3">
-              <Link to="/account" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors">
+              <Link to="/account" className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
                 My Orders
               </Link>
-              <Link to="/products" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-gold hover:text-gold transition-colors">
+              <Link to="/products" className="px-8 py-3 rounded-full border border-black/20 text-sm hover:border-green hover:text-green transition-colors">
                 Back to Shop
               </Link>
             </div>

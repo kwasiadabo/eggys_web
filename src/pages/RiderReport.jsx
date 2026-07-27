@@ -62,15 +62,15 @@ export default function RiderReport() {
     }
   };
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
   const tabClass = (active) =>
     `px-1 pb-3 text-sm border-b-2 transition-colors ${
-      active ? 'border-gold text-ink font-medium' : 'border-transparent text-black/40 hover:text-black/70'
+      active ? 'border-green text-ink font-medium' : 'border-transparent text-black/40 hover:text-black/70'
     }`;
 
   return (
-    <div className="w-full mx-auto max-w-4xl px-4 py-12">
-      <Link to="/rider" className="inline-flex items-center gap-1.5 text-sm text-black/50 hover:text-gold">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
+      <Link to="/rider" className="inline-flex items-center gap-1.5 text-sm text-black/50 hover:text-green">
         <ArrowLeft size={15} strokeWidth={2} /> Back to Deliveries
       </Link>
 
@@ -89,7 +89,7 @@ export default function RiderReport() {
         <button
           onClick={generate}
           disabled={loading}
-          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-50"
+          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-50"
         >
           {loading ? 'Loading…' : 'Generate Report'}
         </button>
@@ -117,7 +117,7 @@ export default function RiderReport() {
             </div>
             <div>
               <p className="text-black/40">Total Delivery Fees</p>
-              <p className="mt-0.5 font-semibold text-gold">GHS {money(report.totals.deliveredFees)}</p>
+              <p className="mt-0.5 font-semibold text-green">GHS {money(report.totals.deliveredFees)}</p>
             </div>
           </div>
 

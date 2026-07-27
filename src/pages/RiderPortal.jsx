@@ -7,6 +7,21 @@ import { useRiderAuthStore } from '../store/riderAuthStore';
 import { useToastStore } from '../store/toastStore';
 import { confirmDialog } from '../store/dialogStore';
 
+const mapsUrl = (order) =>
+	order.deliveryLatitude && order.deliveryLongitude
+		? `https://www.google.com/maps?q=${order.deliveryLatitude},${order.deliveryLongitude}`
+		: null;
+
+const statusBadge = {
+	pending_delivery: 'bg-blue-100 text-blue-800',
+	dispatched: 'bg-orange-100 text-orange-800',
+};
+
+const statusLabel = {
+	pending_delivery: 'Awaiting Dispatch',
+	dispatched: 'Out for Delivery',
+};
+
 export default function RiderPortal() {
 	const rider = useRiderAuthStore((s) => s.rider);
 	const mustSetPassword = useRiderAuthStore((s) => s.mustSetPassword);
@@ -105,7 +120,7 @@ export default function RiderPortal() {
 	};
 
 	const inputClass =
-		'w-full px-4 py-3 rounded-lg border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+		'w-full px-4 py-3 rounded-lg border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
 	const labelClass = 'flex flex-col gap-1 text-xs font-medium text-black/60';
 
 	const searchTerm = search.trim().toLowerCase();
@@ -154,7 +169,7 @@ export default function RiderPortal() {
 						<button
 							type="submit"
 							disabled={loading}
-							className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-40"
+							className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-40"
 						>
 							{loading ? 'Signing in…' : 'Sign In'}
 						</button>
@@ -208,7 +223,7 @@ export default function RiderPortal() {
 						<button
 							type="submit"
 							disabled={savingPassword}
-							className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-40"
+							className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-40"
 						>
 							{savingPassword ? 'Saving…' : 'Set Password & Continue'}
 						</button>
@@ -219,12 +234,12 @@ export default function RiderPortal() {
 	}
 
 	return (
-		<div className="w-full mx-auto max-w-2xl px-4 py-12">
+		<div className="w-full mx-auto max-w-7xl px-4 py-12">
 			<div className="flex items-center justify-between gap-3">
 				<h1 className="font-display text-4xl">Hello, {rider.name}</h1>
 				<Link
 					to="/rider/report"
-					className="shrink-0 flex items-center gap-1.5 text-sm text-gold hover:underline"
+					className="shrink-0 flex items-center gap-1.5 text-sm text-green hover:underline"
 				>
 					<FileBarChart2 size={16} strokeWidth={2} /> My Report
 				</Link>
@@ -244,8 +259,8 @@ export default function RiderPortal() {
 				{loading
 					? 'Loading deliveries…'
 					: orders.length
-						? `${orders.length} dispatched ${orders.length === 1 ? 'delivery' : 'deliveries'}`
-						: 'No deliveries dispatched to you yet'}
+						? `${orders.length} ${orders.length === 1 ? 'delivery' : 'deliveries'} assigned to you`
+						: 'No deliveries assigned to you yet'}
 			</h2>
 			{error && <p className="mt-3 text-red-600 text-sm">{error}</p>}
 
@@ -254,7 +269,7 @@ export default function RiderPortal() {
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 					placeholder="Search by order number, customer or address…"
-					className="mt-4 w-full px-4 py-2.5 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+					className="mt-4 w-full px-4 py-2.5 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
 				/>
 			)}
 
@@ -268,16 +283,21 @@ export default function RiderPortal() {
 						<div key={order.id} className="bg-white border border-black/5 rounded-lg p-4">
 							<div className="flex items-center justify-between gap-2">
 								<p className="font-mono text-xs">{i + 1}. {order.orderNumber}</p>
-								<span className="text-xs px-2 py-0.5 rounded-full capitalize bg-orange-100 text-orange-800">
-									{order.status.replace(/_/g, ' ')}
+								<span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${statusBadge[order.status] || ''}`}>
+									{statusLabel[order.status] || order.status}
 								</span>
 							</div>
 							<p className="mt-2 text-xs text-black/70">
 								{order.OrderItems?.map((item) => `${item.quantity}× ${item.Product?.name}`).join(', ')}
 							</p>
-							<p className="mt-2 text-xs text-gold flex items-start gap-1">
+							<p className="mt-2 text-xs text-green flex items-start gap-1">
 								<MapPin size={12} strokeWidth={2} className="shrink-0 mt-0.5" />
 								{order.shippingAddress}
+								{mapsUrl(order) && (
+									<a href={mapsUrl(order)} target="_blank" rel="noreferrer" className="underline hover:no-underline whitespace-nowrap">
+										Open pin
+									</a>
+								)}
 							</p>
 							<p className="mt-1 text-xs text-black/60">
 								{order.User ? `${order.User.firstName} ${order.User.lastName}` : order.guestName}
@@ -286,26 +306,30 @@ export default function RiderPortal() {
 										{' '}·{' '}
 										<a
 											href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
-											className="text-gold hover:underline"
+											className="text-green hover:underline"
 										>
 											{order.User?.phoneNumber || order.guestPhone}
 										</a>
 									</>
 								)}
 							</p>
-							<button
-								onClick={() => confirmDelivery(order)}
-								disabled={confirming === order.id}
-								className="mt-3 w-full py-2.5 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
-							>
-								{confirming === order.id ? (
-									'Confirming…'
-								) : (
-									<>
-										Confirm Delivery <Check size={14} strokeWidth={2.5} />
-									</>
-								)}
-							</button>
+							{order.status === 'dispatched' ? (
+								<button
+									onClick={() => confirmDelivery(order)}
+									disabled={confirming === order.id}
+									className="mt-3 w-full py-2.5 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
+								>
+									{confirming === order.id ? (
+										'Confirming…'
+									) : (
+										<>
+											Confirm Delivery <Check size={14} strokeWidth={2.5} />
+										</>
+									)}
+								</button>
+							) : (
+								<p className="mt-3 text-center text-xs text-black/40">Waiting to be dispatched to you</p>
+							)}
 						</div>
 					))}
 				</div>
@@ -331,8 +355,8 @@ export default function RiderPortal() {
 									<td className="px-4 py-3">
 										<p className="font-mono text-xs">{order.orderNumber}</p>
 										<p className="text-xs text-black/40 mt-0.5">{formatDate(order.createdAt)}</p>
-										<span className="mt-1 inline-block text-xs px-2 py-0.5 rounded-full capitalize bg-orange-100 text-orange-800">
-											{order.status.replace(/_/g, ' ')}
+										<span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${statusBadge[order.status] || ''}`}>
+											{statusLabel[order.status] || order.status}
 										</span>
 									</td>
 									<td className="px-4 py-3">
@@ -343,9 +367,14 @@ export default function RiderPortal() {
 										</ul>
 									</td>
 									<td className="px-4 py-3">
-										<span className="text-gold text-xs flex items-start gap-1">
+										<span className="text-green text-xs flex items-start gap-1">
 											<MapPin size={12} strokeWidth={2} className="shrink-0 mt-0.5" />
 											{order.shippingAddress}
+											{mapsUrl(order) && (
+												<a href={mapsUrl(order)} target="_blank" rel="noreferrer" className="underline hover:no-underline whitespace-nowrap">
+													Open pin
+												</a>
+											)}
 										</span>
 									</td>
 									<td className="px-4 py-3 text-xs text-black/60 whitespace-nowrap">
@@ -353,26 +382,30 @@ export default function RiderPortal() {
 										{(order.User?.phoneNumber || order.guestPhone) && (
 											<a
 												href={`tel:${order.User?.phoneNumber || order.guestPhone}`}
-												className="text-gold hover:underline"
+												className="text-green hover:underline"
 											>
 												{order.User?.phoneNumber || order.guestPhone}
 											</a>
 										)}
 									</td>
 									<td className="px-4 py-3">
-										<button
-											onClick={() => confirmDelivery(order)}
-											disabled={confirming === order.id}
-											className="whitespace-nowrap px-4 py-2 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
-										>
-											{confirming === order.id ? (
-												'Confirming…'
-											) : (
-												<>
-													Confirm <Check size={14} strokeWidth={2.5} />
-												</>
-											)}
-										</button>
+										{order.status === 'dispatched' ? (
+											<button
+												onClick={() => confirmDelivery(order)}
+												disabled={confirming === order.id}
+												className="whitespace-nowrap px-4 py-2 rounded-full bg-green-700 text-white text-xs hover:bg-green-800 transition-colors disabled:opacity-40 flex items-center justify-center gap-1.5"
+											>
+												{confirming === order.id ? (
+													'Confirming…'
+												) : (
+													<>
+														Confirm <Check size={14} strokeWidth={2.5} />
+													</>
+												)}
+											</button>
+										) : (
+											<span className="text-xs text-black/30 whitespace-nowrap">Awaiting dispatch</span>
+										)}
 									</td>
 								</tr>
 							))}

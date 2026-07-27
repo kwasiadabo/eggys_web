@@ -4,7 +4,9 @@ import { MapPin, Bike } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuthStore } from '../../store/authStore';
 import { useToastStore } from '../../store/toastStore';
-import { money, formatDate } from '../../lib/format';
+import { confirmDialog } from '../../store/dialogStore';
+import { money, formatDate, formatDateTime } from '../../lib/format';
+import SearchableSelect from '../../components/SearchableSelect';
 
 const STATUSES = ['pending', 'pending_delivery', 'dispatched', 'delivered', 'cancelled'];
 
@@ -56,14 +58,22 @@ export default function AdminOrders() {
 
   if (!user?.isAdmin) return null;
 
-  const changeStatus = async (order, status) => {
-    if (status === order.status) return;
+  const dispatch = async (order) => {
+    const ok = await confirmDialog({
+      title: 'Dispatch Order',
+      message: `Dispatch ${order.orderNumber} with ${order.DeliveryPerson.name}? They'll receive it by SMS.`,
+      confirmLabel: 'Dispatch',
+    });
+    if (!ok) return;
     setUpdating(order.id);
     try {
-      await api.patch(`/admin/orders/${order.id}/status`, { status });
+      const { data } = await api.post(`/admin/delivery-persons/${order.DeliveryPerson.id}/dispatch`, {
+        orderIds: [order.id],
+      });
+      toast(`${order.orderNumber} dispatched${data.smsSent ? ' — notified by SMS' : ''}`);
       load();
     } catch (err) {
-      toast(err.response?.data?.error || 'Failed to update status', 'error');
+      toast(err.response?.data?.error || 'Failed to dispatch order', 'error');
     } finally {
       setUpdating(null);
     }
@@ -82,7 +92,7 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="w-full mx-auto max-w-6xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl">Orders</h1>
         <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
@@ -91,26 +101,29 @@ export default function AdminOrders() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Destination
             <input
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="w-full sm:w-52 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold"
+              className="w-full sm:w-52 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Rider
-            <select
+            <SearchableSelect
               value={riderFilter}
-              onChange={(e) => setRiderFilter(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
-            >
-              <option value="">All riders</option>
-              <option value="unassigned">Unassigned</option>
-              {riders.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
+              onChange={setRiderFilter}
+              placeholder="All riders"
+              searchPlaceholder="Search riders…"
+              options={[
+                { value: '', label: 'All riders' },
+                { value: 'unassigned', label: 'Unassigned' },
+                ...riders.map((r) => ({ value: r.id, label: r.name })),
+              ]}
+              triggerClassName="w-full sm:w-40 px-4 py-2 rounded-full border border-black/15 bg-white text-sm"
+            />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Status
             <select
@@ -137,7 +150,7 @@ export default function AdminOrders() {
                 <th className="px-3 py-3 font-medium">Total</th>
                 <th className="px-3 py-3 font-medium">Status</th>
                 <th className="px-3 py-3 font-medium">Rider</th>
-                <th className="px-3 py-3 font-medium">Update</th>
+                <th className="px-3 py-3 font-medium">Dispatch</th>
               </tr>
             </thead>
             <tbody>
@@ -161,7 +174,7 @@ export default function AdminOrders() {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-xs text-gold mt-1.5 flex items-center gap-1">
+                    <p className="text-xs text-green mt-1.5 flex items-center gap-1">
                       <MapPin size={12} strokeWidth={2} className="shrink-0" /> {order.shippingAddress || 'No address'}
                     </p>
                   </td>
@@ -174,21 +187,27 @@ export default function AdminOrders() {
                       <span className={`text-[10px] px-2 py-0.5 rounded-full ${order.paymentStatus === 'completed' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
                         pay: {order.paymentStatus}
                       </span>
+                      {order.status === 'delivered' && order.deliveredAt && (
+                        <span className="text-[10px] text-black/40">
+                          Delivered {formatDateTime(order.deliveredAt)}
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="px-3 py-3">
                     {order.status === 'pending_delivery' ? (
-                      <select
+                      <SearchableSelect
                         value={order.DeliveryPerson?.id || ''}
                         disabled={updating === order.id}
-                        onChange={(e) => assignRider(order, e.target.value)}
-                        className="px-2 py-1 rounded border border-black/15 bg-white text-xs disabled:opacity-40"
-                      >
-                        <option value="">— Unassigned —</option>
-                        {riders.filter((r) => r.isActive).map((r) => (
-                          <option key={r.id} value={r.id}>{r.name}</option>
-                        ))}
-                      </select>
+                        onChange={(deliveryPersonId) => assignRider(order, deliveryPersonId)}
+                        placeholder="— Unassigned —"
+                        searchPlaceholder="Search riders…"
+                        options={[
+                          { value: '', label: '— Unassigned —' },
+                          ...riders.filter((r) => r.isActive).map((r) => ({ value: r.id, label: r.name })),
+                        ]}
+                        triggerClassName="w-36 px-2 py-1 rounded border border-black/15 bg-white text-xs"
+                      />
                     ) : order.DeliveryPerson ? (
                       <p className="text-xs whitespace-nowrap flex items-center gap-1">
                         <Bike size={13} strokeWidth={2} className="shrink-0" /> {order.DeliveryPerson.name}
@@ -198,14 +217,17 @@ export default function AdminOrders() {
                     )}
                   </td>
                   <td className="px-3 py-3">
-                    <select
-                      value={order.status}
-                      disabled={updating === order.id}
-                      onChange={(e) => changeStatus(order, e.target.value)}
-                      className="px-2 py-1 rounded border border-black/15 bg-white text-xs disabled:opacity-40"
-                    >
-                      {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
-                    </select>
+                    {order.status === 'pending_delivery' && order.DeliveryPerson ? (
+                      <button
+                        onClick={() => dispatch(order)}
+                        disabled={updating === order.id}
+                        className="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-full bg-ink text-white text-xs hover:bg-green transition-colors disabled:opacity-40"
+                      >
+                        {updating === order.id ? 'Dispatching…' : 'Dispatch'}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-black/30">—</span>
+                    )}
                   </td>
                 </tr>
               ))}

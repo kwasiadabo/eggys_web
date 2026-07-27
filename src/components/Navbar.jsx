@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Egg } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useRiderAuthStore } from '../store/riderAuthStore';
 
 const navLinkClass = ({ isActive }) =>
-  `text-sm tracking-wide transition-colors ${isActive ? 'text-gold' : 'text-black/60 hover:text-black'}`;
+  `text-sm tracking-wide transition-colors ${isActive ? 'text-green' : 'text-black/60 hover:text-black'}`;
 
 const mobileNavLinkClass = ({ isActive }) =>
-  `block px-4 py-3 text-base tracking-wide transition-colors ${isActive ? 'text-gold' : 'text-black/70 hover:text-black'}`;
+  `block px-4 py-3 text-base tracking-wide transition-colors ${isActive ? 'text-green' : 'text-black/70 hover:text-black'}`;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -31,8 +32,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur border-b border-black/10">
       <div className="w-full mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
-        <Link to="/" onClick={closeMenu} className="font-display text-2xl tracking-widest">
-          EGG<span className="text-gold">YS</span>
+        <Link to="/" onClick={closeMenu} className="flex items-center gap-2 font-display text-2xl tracking-widest">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-light/40 text-green">
+            <Egg size={18} strokeWidth={2} fill="currentColor" className="text-green" />
+          </span>
+          EGG<span className="text-green">YS</span>
         </Link>
 
         {/* Desktop nav */}
@@ -41,7 +45,7 @@ export default function Navbar() {
           <NavLink to="/favorites" className={navLinkClass}>Favourites</NavLink>
           {count > 0 && (
             <NavLink to="/cart" className={navLinkClass}>
-              Cart <span className="ml-1 text-gold">({count})</span>
+              Cart <span className="ml-1 text-green">({count})</span>
             </NavLink>
           )}
           {user && (
@@ -99,7 +103,7 @@ export default function Navbar() {
           <NavLink to="/favorites" onClick={closeMenu} className={mobileNavLinkClass}>Favourites</NavLink>
           {count > 0 && (
             <NavLink to="/cart" onClick={closeMenu} className={mobileNavLinkClass}>
-              Cart <span className="ml-1 text-gold">({count})</span>
+              Cart <span className="ml-1 text-green">({count})</span>
             </NavLink>
           )}
           {user && (

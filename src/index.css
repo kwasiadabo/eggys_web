@@ -3,11 +3,11 @@
 @theme {
   --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --color-ink: #2b2118;
-  --color-ink-deep: #1a130d;
+  --color-ink: #202b1c;
+  --color-ink-deep: #131a10;
   --color-cream: #fff8ec;
-  --color-gold: #e8a33d;
-  --color-gold-light: #f4c876;
+  --color-green: #3d7d3f;
+  --color-green-light: #a8e070;
 }
 
 body {
@@ -15,6 +15,16 @@ body {
   background-color: var(--color-cream);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Faint speckled-egg texture for section backgrounds — decorative only */
+.bg-speckle {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.bg-farm-fade {
+  background: linear-gradient(180deg, var(--color-ink) 0%, var(--color-ink-deep) 100%);
 }
 
 @keyframes toast-in {

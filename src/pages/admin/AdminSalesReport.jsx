@@ -50,10 +50,10 @@ export default function AdminSalesReport() {
     }
   };
 
-  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-gold';
+  const inputClass = 'px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green';
 
   return (
-    <div className="w-full mx-auto max-w-5xl px-4 py-12">
+    <div className="w-full mx-auto max-w-7xl px-4 py-12">
       <h1 className="font-display text-4xl">Sales Report</h1>
       <p className="mt-2 text-sm text-black/50">
         Daily sales and the revenue trend over a selected period.
@@ -69,7 +69,7 @@ export default function AdminSalesReport() {
         <button
           onClick={generate}
           disabled={loading}
-          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-50"
+          className="px-6 py-2.5 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-50"
         >
           {loading ? 'Loading…' : 'Generate Report'}
         </button>
@@ -101,7 +101,7 @@ export default function AdminSalesReport() {
             </div>
             <div>
               <p className="text-black/40">Total Revenue</p>
-              <p className="mt-0.5 font-semibold text-gold">GHS {money(report.totals.totalRevenue)}</p>
+              <p className="mt-0.5 font-semibold text-green">GHS {money(report.totals.totalRevenue)}</p>
             </div>
           </div>
 

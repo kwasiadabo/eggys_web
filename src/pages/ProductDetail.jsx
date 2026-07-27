@@ -7,6 +7,8 @@ import { useAuthStore } from '../store/authStore';
 import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
 import CartFab from '../components/CartFab';
+import EggPlaceholder from '../components/farm/EggPlaceholder';
+import QuantityStepper from '../components/QuantityStepper';
 
 const EGG_TYPE_LABELS = { chicken: 'Chicken', duck: 'Duck', quail: 'Quail', guinea_fowl: 'Guinea Fowl', turkey: 'Turkey' };
 const FARMING_LABELS = { free_range: 'Free Range', organic: 'Organic', caged: 'Caged', pasture_raised: 'Pasture Raised' };
@@ -15,12 +17,14 @@ export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [favorited, setFavorited] = useState(false);
+  const [qty, setQty] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
   const toast = useToastStore((s) => s.show);
   const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
     api.get(`/products/${id}`).then((res) => setProduct(res.data)).catch(() => {});
+    setQty(1);
   }, [id]);
 
   const toggleFavorite = async () => {
@@ -38,7 +42,8 @@ export default function ProductDetail() {
 
   if (!product) return <p className="text-center py-20 text-black/40">Loading…</p>;
 
-  const inStock = (product.Inventory?.quantityInStock ?? 0) > 0;
+  const stock = product.Inventory?.quantityInStock ?? 0;
+  const inStock = stock > 0;
   const specs = [
     ['Egg Type', EGG_TYPE_LABELS[product.eggType]],
     ['Grade', product.gradeSize?.replace(/_/g, ' ')],
@@ -51,12 +56,11 @@ export default function ProductDetail() {
         {product.imageUrl ? (
           <img src={resolveAssetUrl(product.imageUrl)} alt={product.name} className="w-full h-full object-cover" />
         ) : (
-          <span className="font-display text-6xl text-black/10">E</span>
+          <EggPlaceholder size={72} />
         )}
       </div>
       <div>
-        <p className="text-xs uppercase tracking-widest text-gold">{product.Brand?.name}</p>
-        <h1 className="font-display text-4xl mt-2">{product.name}</h1>
+        <h1 className="font-display text-4xl">{product.name}</h1>
         <p className="text-sm text-black/40 mt-1">
           {product.packSize && `${product.packSize}-pack · `}{EGG_TYPE_LABELS[product.eggType]}
         </p>
@@ -67,28 +71,30 @@ export default function ProductDetail() {
           <div className="mt-6 space-y-1">
             {specs.map(([label, value]) => (
               <p key={label} className="text-sm">
-                <span className="text-gold uppercase text-xs tracking-widest mr-2">{label}</span>
+                <span className="text-green uppercase text-xs tracking-widest mr-2">{label}</span>
                 {value}
               </p>
             ))}
           </div>
         )}
 
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          {inStock && <QuantityStepper value={qty} onChange={setQty} max={stock} />}
           <button
             onClick={() => {
-              addItem(product);
-              toast(`${product.name} added to cart`);
+              addItem(product, qty);
+              toast(`${qty} × ${product.name} added to cart`);
+              setQty(1);
             }}
             disabled={!inStock}
-            className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-gold transition-colors disabled:opacity-30"
+            className="px-8 py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-30"
           >
             {inStock ? 'Add to Cart' : 'Sold Out'}
           </button>
           <button
             onClick={toggleFavorite}
             className={`flex items-center gap-1.5 px-6 py-3 rounded-full border text-sm transition-colors ${
-              favorited ? 'border-gold text-gold' : 'border-black/20 hover:border-black'
+              favorited ? 'border-green text-green' : 'border-black/20 hover:border-black'
             }`}
           >
             <Heart size={16} strokeWidth={2} fill={favorited ? 'currentColor' : 'none'} />
