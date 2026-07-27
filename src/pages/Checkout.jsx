@@ -53,6 +53,26 @@ export default function Checkout() {
     api.get('/delivery-fees').then((res) => setFees(res.data)).catch(() => {});
   }, []);
 
+  // If the browser already has geolocation permission granted for this site
+  // (from an earlier visit), pick up the location right away instead of
+  // making the buyer click "Yes" again to re-trigger a prompt that won't show.
+  useEffect(() => {
+    if (!navigator.permissions?.query) return;
+    let permissionStatus;
+    const handleChange = () => {
+      if (permissionStatus.state === 'granted') answerAtDeliveryLocation(true);
+    };
+    navigator.permissions
+      .query({ name: 'geolocation' })
+      .then((status) => {
+        permissionStatus = status;
+        handleChange();
+        status.addEventListener('change', handleChange);
+      })
+      .catch(() => {});
+    return () => permissionStatus?.removeEventListener('change', handleChange);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const setField = (key) => (e) => setDelivery({ ...delivery, [key]: e.target.value });
 
   const shippingCost = Number(fees[0]?.fee ?? 20);

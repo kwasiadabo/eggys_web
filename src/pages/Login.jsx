@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/authStore';
 
 export default function Login() {
   const [mode, setMode] = useState('login'); // login | register
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', phoneNumber: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phoneNumber: '' });
   const [error, setError] = useState('');
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();
@@ -15,9 +15,13 @@ export default function Login() {
   const submit = async (e) => {
     e.preventDefault();
     setError('');
+    if (mode === 'register' && form.password !== form.confirmPassword) {
+      return setError('Passwords do not match');
+    }
     try {
       const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-      const { data } = await api.post(endpoint, form);
+      const { confirmPassword, ...payload } = form;
+      const { data } = await api.post(endpoint, payload);
       login(data.token, data.user);
       navigate('/');
     } catch (err) {
@@ -55,6 +59,11 @@ export default function Login() {
         <label className={labelClass}>Password *
           <input required type="password" value={form.password} onChange={set('password')} className={inputClass} />
         </label>
+        {mode === 'register' && (
+          <label className={labelClass}>Confirm password *
+            <input required type="password" value={form.confirmPassword} onChange={set('confirmPassword')} className={inputClass} />
+          </label>
+        )}
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <button type="submit" className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors">
           {mode === 'login' ? 'Sign In' : 'Create Account'}
