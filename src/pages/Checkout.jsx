@@ -314,8 +314,8 @@ export default function Checkout() {
 						: `Pay GHS ${money(total)}`}
 				</button>
 				<p className="text-xs text-black/40 text-center">
-					Secured by Paystack · Card & Mobile Money accepted · SMS confirmation
-					via Nalo
+					Secured by Variable-X · Card & Mobile Money accepted · SMS
+					confirmation VX
 				</p>
 			</form>
 		</div>
