@@ -139,7 +139,7 @@ export default function Footer() {
 			<div className="border-t border-white/10">
 				<p className="w-full mx-auto max-w-6xl px-4 py-2 sm:py-4 text-center text-[11px] sm:text-xs text-white/40">
 					© {new Date().getFullYear()} Eggys · Farm-Fresh Eggs · Secured
-					payments by Paystack
+					payments
 				</p>
 			</div>
 		</footer>
