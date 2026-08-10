@@ -23,6 +23,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminDelivery from './pages/admin/AdminDelivery';
 import AdminRiders from './pages/admin/AdminRiders';
+import AdminUsers from './pages/admin/AdminUsers';
 import AdminDeliveryFees from './pages/admin/AdminDeliveryFees';
 import AdminIssues from './pages/admin/AdminIssues';
 import AdminOrdersReport from './pages/admin/AdminOrdersReport';
@@ -55,6 +56,7 @@ export default function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="delivery" element={<AdminDelivery />} />
             <Route path="riders" element={<AdminRiders />} />
+            <Route path="users" element={<AdminUsers />} />
             <Route path="delivery-fees" element={<AdminDeliveryFees />} />
             <Route path="issues" element={<AdminIssues />} />
             <Route path="reports/orders" element={<AdminOrdersReport />} />

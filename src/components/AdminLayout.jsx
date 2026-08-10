@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Receipt, Bike, Flag, Settings, FileBarChart2,
-  Wallet, PackageSearch, IdCard, ChevronRight,
+  Wallet, PackageSearch, IdCard, Users, ChevronRight,
 } from 'lucide-react';
 import api from '../lib/api';
 import { useAuthStore } from '../store/authStore';
@@ -51,6 +51,7 @@ const SETUP_MENU = [
   { to: '/admin/delivery-fees', label: 'Delivery Fees', icon: Wallet },
   { to: '/admin/products', label: 'Manage Products', icon: PackageSearch },
   { to: '/admin/riders', label: 'Riders', icon: IdCard },
+  { to: '/admin/users', label: 'Customers', icon: Users },
 ];
 
 const REPORTS_MENU = [

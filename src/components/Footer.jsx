@@ -118,14 +118,14 @@ export default function Footer() {
 				</p>
 				<div className="flex items-center gap-1">
 					<a
-						href="tel:+233500008001"
+						href="tel:050 974 6580"
 						aria-label="Call us"
 						className="flex h-11 w-11 items-center justify-center text-white/70 hover:text-green transition-colors"
 					>
 						<Phone size={18} />
 					</a>
 					<a
-						href="https://wa.me/233500008001"
+						href="https://wa.me/050 974 6580"
 						target="_blank"
 						rel="noreferrer"
 						aria-label="Message us on WhatsApp"
