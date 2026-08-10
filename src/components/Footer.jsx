@@ -19,8 +19,9 @@ export default function Footer() {
 						EGG<span className="text-green">YS</span>
 					</p>
 					<p className="mt-2.5 text-sm leading-relaxed">
-						Farm-fresh eggs from Ghana's best local producers, delivered across
-						Ghana and West Africa.
+						Farm-fresh eggs from our organically raised chickens, delivered to
+						your doorstep at Balloon Gate. We prioritize quality,
+						sustainability, and customer satisfaction.
 					</p>
 				</div>
 
@@ -31,28 +32,28 @@ export default function Footer() {
 					<ul className="mt-3 space-y-2 text-sm">
 						<li>
 							<a
-								href="tel:+233500008001"
+								href="tel:+233509746580"
 								className="hover:text-green transition-colors"
 							>
-								Phone: +233 50 000 8001
+								Phone: +233 50 974 6580
 							</a>
 						</li>
 						<li>
 							<a
-								href="https://wa.me/233500008001"
+								href="https://wa.me/233509746580"
 								target="_blank"
 								rel="noreferrer"
 								className="hover:text-green transition-colors"
 							>
-								WhatsApp: +233 50 000 8001
+								WhatsApp: +233 50 974 6580
 							</a>
 						</li>
 						<li>
 							<a
-								href="mailto:hello@eggys.example.com"
+								href="mailto:info@eggys.store"
 								className="hover:text-green transition-colors break-all"
 							>
-								Email: adabo@variablexsolutions.com
+								Email: info@eggys.store
 							</a>
 						</li>
 					</ul>
