@@ -8,7 +8,7 @@ export default function Footer() {
 		s.items.reduce((sum, i) => sum + i.quantity, 0),
 	);
 	return (
-		<footer className="relative bg-ink-deep text-white/70 mt-auto">
+		<footer className="relative bg-ink-deep text-white/70 mt-auto pt-10 sm:pt-14">
 			<SectionWave className="absolute inset-x-0 top-0 text-ink-deep pointer-events-none" />
 
 			{/* Full footer — sm and up */}
