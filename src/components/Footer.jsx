@@ -9,7 +9,7 @@ export default function Footer() {
 	);
 	return (
 		<footer className="relative bg-ink-deep text-white/70 mt-auto">
-			<SectionWave className="absolute inset-x-0 -top-10 sm:-top-14 text-ink-deep" />
+			<SectionWave className="absolute inset-x-0 top-0 text-ink-deep pointer-events-none" />
 
 			{/* Full footer — sm and up */}
 			<div className="hidden sm:grid w-full mx-auto max-w-6xl px-4 py-10 gap-8 md:grid-cols-3">
