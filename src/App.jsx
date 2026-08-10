@@ -1,9 +1,13 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLayout from './components/AdminLayout';
 import Toaster from './components/Toaster';
 import ConfirmDialog from './components/ConfirmDialog';
+import { useAuthStore } from './store/authStore';
+import { useRiderAuthStore } from './store/riderAuthStore';
+import { useToastStore } from './store/toastStore';
+import { useIdleLogout } from './lib/useIdleLogout';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -31,7 +35,28 @@ import AdminRiderDeliveriesReport from './pages/admin/AdminRiderDeliveriesReport
 import AdminSalesReport from './pages/admin/AdminSalesReport';
 import AdminProductSalesTrend from './pages/admin/AdminProductSalesTrend';
 
+const IDLE_TIMEOUT_MS = 25 * 60 * 1000;
+
 export default function App() {
+  const navigate = useNavigate();
+  const toast = useToastStore((s) => s.show);
+  const user = useAuthStore((s) => s.user);
+  const customerLogout = useAuthStore((s) => s.logout);
+  const rider = useRiderAuthStore((s) => s.rider);
+  const riderLogout = useRiderAuthStore((s) => s.logout);
+
+  useIdleLogout(Boolean(user), IDLE_TIMEOUT_MS, () => {
+    customerLogout();
+    toast("You've been signed out due to inactivity", 'info');
+    navigate('/login');
+  });
+
+  useIdleLogout(Boolean(rider), IDLE_TIMEOUT_MS, () => {
+    riderLogout();
+    toast("You've been signed out due to inactivity", 'info');
+    navigate('/rider');
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
