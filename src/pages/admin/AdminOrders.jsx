@@ -27,8 +27,10 @@ export default function AdminOrders() {
   const [filter, setFilter] = useState('');
   const [destination, setDestination] = useState('');
   const [riderFilter, setRiderFilter] = useState('');
-  // defaults to today's orders; clear the field to see every date
-  const [date, setDate] = useState(() => new Date().toLocaleDateString('en-CA'));
+  // no date filter by default — an empty range shows every order, so it never
+  // hides something the sidebar's pending-orders badge is counting
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
 
@@ -38,7 +40,8 @@ export default function AdminOrders() {
     if (filter) params.status = filter;
     if (destination) params.destination = destination;
     if (riderFilter) params.rider = riderFilter;
-    if (date) params.date = date;
+    if (dateFrom) params.dateFrom = dateFrom;
+    if (dateTo) params.dateTo = dateTo;
     api.get('/admin/orders', { params })
       .then((res) => setOrders(res.data))
       .catch(() => setOrders([]))
@@ -49,7 +52,7 @@ export default function AdminOrders() {
     if (!user?.isAdmin) return navigate('/');
     const timer = setTimeout(load, destination ? 300 : 0); // debounce typing
     return () => clearTimeout(timer);
-  }, [user, navigate, filter, destination, riderFilter, date]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, navigate, filter, destination, riderFilter, dateFrom, dateTo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!user?.isAdmin) return;
@@ -96,11 +99,21 @@ export default function AdminOrders() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl">Orders</h1>
         <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Order date (clear for all)
+          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">From
             <input
               type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              value={dateFrom}
+              max={dateTo || undefined}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">To
+            <input
+              type="date"
+              value={dateTo}
+              min={dateFrom || undefined}
+              onChange={(e) => setDateTo(e.target.value)}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
             />
           </label>
@@ -237,7 +250,14 @@ export default function AdminOrders() {
       ) : (
         <p className="mt-12 text-center text-black/40">
           No orders{filter ? ` with status "${filter.replace(/_/g, ' ')}"` : ''}
-          {date ? ` on ${formatDate(`${date}T00:00:00`)}` : ''} — clear the date filter to see all orders.
+          {dateFrom || dateTo ? (
+            <>
+              {' '}between {dateFrom ? formatDate(`${dateFrom}T00:00:00`) : 'the beginning'} and{' '}
+              {dateTo ? formatDate(`${dateTo}T00:00:00`) : 'now'} — clear the date range to see all orders.
+            </>
+          ) : (
+            '.'
+          )}
         </p>
       )}
     </div>
