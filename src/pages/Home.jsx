@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sprout, Droplets, Truck, Egg } from 'lucide-react';
+import { Sprout, Droplets, Truck, Egg, Search, ShoppingCart, CreditCard, PackageCheck } from 'lucide-react';
 import api from '../lib/api';
 import ProductCard from '../components/ProductCard';
 import FarmHorizon from '../components/farm/FarmHorizon';
@@ -10,6 +10,13 @@ const FEATURES = [
   { icon: Sprout, title: 'Pasture-Raised', desc: 'Hens roam free on local Ghanaian farms, not cages.' },
   { icon: Droplets, title: 'Washed & Graded', desc: 'Every egg is cleaned, checked and sized by hand.' },
   { icon: Truck, title: 'Delivered Fresh', desc: 'From the coop to your door, often within the same day.' },
+];
+
+const STEPS = [
+  { icon: Search, title: 'Browse the Collection', desc: 'Explore our farm-fresh eggs and pick what suits your kitchen.' },
+  { icon: ShoppingCart, title: 'Add to Cart', desc: 'Choose your quantity and add products to your cart.' },
+  { icon: CreditCard, title: 'Checkout & Pay', desc: 'Pay securely by card or mobile money at checkout.' },
+  { icon: PackageCheck, title: 'Track & Receive', desc: "Track your order until it's delivered fresh to your door." },
 ];
 
 export default function Home() {
@@ -83,10 +90,43 @@ export default function Home() {
       </section>
 
       <section className="w-full mx-auto max-w-6xl px-4 py-16">
+        <h2 className="font-display text-3xl text-center">How to Order</h2>
+        <p className="mt-2 text-center text-sm text-black/50">
+          From browsing to your doorstep in four simple steps.
+        </p>
+        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map(({ icon: Icon, title, desc }, i) => (
+            <div key={title} className="relative text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-light/25 text-green">
+                <Icon size={22} strokeWidth={2} />
+              </div>
+              <span className="mt-3 block font-display text-xs tracking-[0.3em] text-green">
+                STEP {i + 1}
+              </span>
+              <p className="mt-1 font-display text-lg">{title}</p>
+              <p className="mt-1 text-sm text-black/50 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            to="/products"
+            className="inline-block px-8 py-3 rounded-full bg-green text-white text-sm tracking-wide hover:bg-green-light transition-colors"
+          >
+            Start Shopping
+          </Link>
+        </div>
+      </section>
+
+      <section className="w-full mx-auto max-w-6xl px-4 py-16">
         <h2 className="font-display text-3xl text-center">Recommended for You</h2>
         {recommended.length ? (
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {recommended.map((p) => <ProductCard key={p.id} product={p} />)}
+          <div className="mt-8 flex flex-wrap justify-center gap-6">
+            {recommended.map((p) => (
+              <div key={p.id} className="w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
+                <ProductCard product={p} />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="mt-8 flex flex-col items-center gap-2 text-black/40">

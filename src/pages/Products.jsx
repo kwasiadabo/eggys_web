@@ -75,8 +75,15 @@ export default function Products() {
         </div>
       ) : products.length ? (
         <>
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+          <div className="mt-8 flex flex-wrap justify-center gap-6">
+            {products.map((p) => (
+              <div
+                key={p.id}
+                className="w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)]"
+              >
+                <ProductCard product={p} />
+              </div>
+            ))}
           </div>
           {products.length < total && (
             <div className="mt-10 text-center">
