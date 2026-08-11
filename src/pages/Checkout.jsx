@@ -86,7 +86,9 @@ export default function Checkout() {
 	const setField = (key) => (e) =>
 		setDelivery({ ...delivery, [key]: e.target.value });
 
-	const shippingCost = Number(fees[0]?.fee ?? 20);
+	// Flat delivery fee, temporarily 0 while service is limited to a single
+	// estate — set via Admin → Delivery Fees when ready to charge for delivery.
+	const shippingCost = Number(fees[0]?.fee ?? 0);
 
 	const subtotal = items.reduce(
 		(sum, i) => sum + Number(i.product.price) * i.quantity,
@@ -236,12 +238,16 @@ export default function Checkout() {
 					<p className="text-xs uppercase tracking-[0.2em] text-green">
 						Delivery Details
 					</p>
+					<p className="text-xs text-black/50 -mt-1">
+						We currently deliver only within Regimanuel Gray, Balloon Gate estate.
+					</p>
 					<label className={labelClass}>
-						RGMC Link/Block, Flat/House No. *
+						Regimanuel Gray, Balloon Gate — Link/Block, Flat/House No. *
 						<input
 							required
 							value={delivery.area}
 							onChange={setField('area')}
+							placeholder="e.g. Link 4, House 12"
 							className={inputClass}
 						/>
 					</label>
