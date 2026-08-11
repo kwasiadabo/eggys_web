@@ -6,6 +6,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useToastStore } from '../store/toastStore';
 import { money } from '../lib/format';
+import { isWithinDeliveryZone } from '../lib/geofence';
 
 export default function Checkout() {
 	const { items, clear } = useCartStore();
@@ -86,6 +87,14 @@ export default function Checkout() {
 	const setField = (key) => (e) =>
 		setDelivery({ ...delivery, [key]: e.target.value });
 
+	// null = no verified location yet (soft-warn, but don't block — the address
+	// field is still trusted); true/false = a shared location definitively
+	// confirmed inside/outside the estate.
+	const inGeofence = coords
+		? isWithinDeliveryZone(coords.lat, coords.lng)
+		: null;
+	const outOfZone = inGeofence === false;
+
 	// Flat delivery fee, temporarily 0 while service is limited to a single
 	// estate — set via Admin → Delivery Fees when ready to charge for delivery.
 	const shippingCost = Number(fees[0]?.fee ?? 0);
@@ -124,6 +133,12 @@ export default function Checkout() {
 
 	const placeOrder = async (e) => {
 		e.preventDefault();
+		if (coords && !isWithinDeliveryZone(coords.lat, coords.lng)) {
+			setError(
+				"This location is outside Regimanuel Gray, Balloon Gate estate — we can only deliver within this area right now.",
+			);
+			return;
+		}
 		setSubmitting(true);
 		setError('');
 		try {
@@ -284,14 +299,27 @@ export default function Checkout() {
 								Getting your location…
 							</p>
 						)}
-						{coords && (
+						{coords && inGeofence && (
 							<p className="mt-1.5 flex items-center gap-1 text-xs text-green">
-								<MapPin size={12} strokeWidth={2} /> Location shared — this
-								helps your rider find you faster.
+								<MapPin size={12} strokeWidth={2} /> Location confirmed within
+								Regimanuel Gray, Balloon Gate estate.
+							</p>
+						)}
+						{coords && outOfZone && (
+							<p className="mt-1.5 flex items-center gap-1 text-xs text-red-600">
+								<MapPin size={12} strokeWidth={2} /> This location looks like
+								it's outside Regimanuel Gray, Balloon Gate estate — we can only
+								deliver within this area right now.
 							</p>
 						)}
 						{locationError && (
 							<p className="mt-1.5 text-xs text-black/40">{locationError}</p>
+						)}
+						{atDeliveryLocation === false && (
+							<p className="mt-1.5 text-xs text-black/40">
+								We can't verify your location — please make sure this is for
+								delivery within Regimanuel Gray, Balloon Gate estate.
+							</p>
 						)}
 					</div>
 				</div>
@@ -312,12 +340,14 @@ export default function Checkout() {
 				{error && <p className="text-red-600 text-sm">{error}</p>}
 				<button
 					type="submit"
-					disabled={submitting || !items.length}
+					disabled={submitting || !items.length || outOfZone}
 					className="w-full py-3 rounded-full bg-ink text-white text-sm hover:bg-green transition-colors disabled:opacity-40"
 				>
 					{submitting
 						? 'Redirecting to Payment Portal…'
-						: `Pay GHS ${money(total)}`}
+						: outOfZone
+							? 'Outside delivery area'
+							: `Pay GHS ${money(total)}`}
 				</button>
 				<p className="text-xs text-black/40 text-center">
 					Secured by Variable-X · Card & Mobile Money accepted · SMS

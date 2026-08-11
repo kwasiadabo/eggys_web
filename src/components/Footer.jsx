@@ -53,7 +53,7 @@ export default function Footer() {
 								href="mailto:info@eggys.store"
 								className="hover:text-green transition-colors break-all"
 							>
-								Email: info@eggys.store
+								Email: eggysgh@gmail.com
 							</a>
 						</li>
 					</ul>
