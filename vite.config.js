@@ -34,6 +34,10 @@ export default defineConfig(({ mode }) => {
 				},
 				workbox: {
 					navigateFallback: '/index.html',
+					// Real static files (sitemap.xml, robots.txt, etc.) have an
+					// extension in the path — don't let the SPA fallback swallow
+					// those and serve the cached app shell instead.
+					navigateFallbackDenylist: [/\.[a-zA-Z0-9]+$/],
 					cleanupOutdatedCaches: true,
 					runtimeCaching: [
 						{
