@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLayout from './components/AdminLayout';
@@ -41,6 +41,8 @@ const IDLE_TIMEOUT_MS = 25 * 60 * 1000;
 
 export default function App() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
   const toast = useToastStore((s) => s.show);
   const user = useAuthStore((s) => s.user);
   const customerLogout = useAuthStore((s) => s.logout);
@@ -96,7 +98,13 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Footer />
+      {isAdminRoute ? (
+        <footer className="border-t border-black/10 py-3 text-center text-[11px] text-black/40">
+          © {new Date().getFullYear()} Eggys · Admin
+        </footer>
+      ) : (
+        <Footer />
+      )}
       <Toaster />
       <ConfirmDialog />
     </div>

@@ -8,7 +8,8 @@ import { confirmDialog } from '../../store/dialogStore';
 import { money, formatDate, formatDateTime } from '../../lib/format';
 import SearchableSelect from '../../components/SearchableSelect';
 
-const STATUSES = ['pending', 'pending_delivery', 'dispatched', 'delivered', 'cancelled'];
+// 'delivered' is deliberately excluded here — those orders live on the History tab.
+const CURRENT_STATUSES = ['pending', 'pending_delivery', 'dispatched', 'cancelled'];
 
 const badge = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -18,26 +19,43 @@ const badge = {
   cancelled: 'bg-red-100 text-red-800',
 };
 
+const todayStr = () => new Date().toISOString().slice(0, 10);
+
 export default function AdminOrders() {
   const user = useAuthStore((s) => s.user);
   const toast = useToastStore((s) => s.show);
   const navigate = useNavigate();
+  const [tab, setTab] = useState('current'); // 'current' | 'history'
   const [orders, setOrders] = useState([]);
   const [riders, setRiders] = useState([]);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState(''); // status dropdown — current tab only
   const [destination, setDestination] = useState('');
   const [riderFilter, setRiderFilter] = useState('');
-  // no date filter by default — an empty range shows every order, so it never
-  // hides something the sidebar's pending-orders badge is counting
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  // Current tab defaults to today so the page opens on today's active orders;
+  // History defaults to no range (every delivered order) until narrowed.
+  const [dateFrom, setDateFrom] = useState(todayStr());
+  const [dateTo, setDateTo] = useState(todayStr());
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
+
+  const switchTab = (next) => {
+    setTab(next);
+    setFilter('');
+    setDestination('');
+    setRiderFilter('');
+    if (next === 'current') {
+      setDateFrom(todayStr());
+      setDateTo(todayStr());
+    } else {
+      setDateFrom('');
+      setDateTo('');
+    }
+  };
 
   const load = () => {
     setLoading(true);
     const params = {};
-    if (filter) params.status = filter;
+    params.status = tab === 'history' ? 'delivered' : (filter || 'active');
     if (destination) params.destination = destination;
     if (riderFilter) params.rider = riderFilter;
     if (dateFrom) params.dateFrom = dateFrom;
@@ -52,7 +70,7 @@ export default function AdminOrders() {
     if (!user?.isAdmin) return navigate('/');
     const timer = setTimeout(load, destination ? 300 : 0); // debounce typing
     return () => clearTimeout(timer);
-  }, [user, navigate, filter, destination, riderFilter, dateFrom, dateTo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, navigate, tab, filter, destination, riderFilter, dateFrom, dateTo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!user?.isAdmin) return;
@@ -96,59 +114,77 @@ export default function AdminOrders() {
 
   return (
     <div className="w-full mx-auto max-w-7xl px-4 py-12">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="font-display text-4xl">Orders</h1>
-        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">From
-            <input
-              type="date"
-              value={dateFrom}
-              max={dateTo || undefined}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">To
-            <input
-              type="date"
-              value={dateTo}
-              min={dateFrom || undefined}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Destination
-            <input
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              className="w-full sm:w-52 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Rider
-            <SearchableSelect
-              value={riderFilter}
-              onChange={setRiderFilter}
-              placeholder="All riders"
-              searchPlaceholder="Search riders…"
-              options={[
-                { value: '', label: 'All riders' },
-                { value: 'unassigned', label: 'Unassigned' },
-                ...riders.map((r) => ({ value: r.id, label: r.name })),
-              ]}
-              triggerClassName="w-full sm:w-40 px-4 py-2 rounded-full border border-black/15 bg-white text-sm"
-            />
-          </label>
+        <div className="flex gap-1 p-1 rounded-full bg-black/5">
+          <button
+            onClick={() => switchTab('current')}
+            className={`px-4 py-2 rounded-full text-sm transition-colors ${tab === 'current' ? 'bg-white shadow-sm font-medium' : 'text-black/50 hover:text-black'}`}
+          >
+            Current
+          </button>
+          <button
+            onClick={() => switchTab('history')}
+            className={`px-4 py-2 rounded-full text-sm transition-colors ${tab === 'history' ? 'bg-white shadow-sm font-medium' : 'text-black/50 hover:text-black'}`}
+          >
+            History
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end">
+        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">From
+          <input
+            type="date"
+            value={dateFrom}
+            max={dateTo || undefined}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">To
+          <input
+            type="date"
+            value={dateTo}
+            min={dateFrom || undefined}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Search
+          <input
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            placeholder="Order #, customer, or address"
+            className="w-full sm:w-56 px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none focus:border-green"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Rider
+          <SearchableSelect
+            value={riderFilter}
+            onChange={setRiderFilter}
+            placeholder="All riders"
+            searchPlaceholder="Search riders…"
+            options={[
+              { value: '', label: 'All riders' },
+              { value: 'unassigned', label: 'Unassigned' },
+              ...riders.map((r) => ({ value: r.id, label: r.name })),
+            ]}
+            triggerClassName="w-full sm:w-40 px-4 py-2 rounded-full border border-black/15 bg-white text-sm"
+          />
+        </label>
+        {tab === 'current' && (
           <label className="flex flex-col gap-1 text-xs font-medium text-black/60">Status
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               className="w-full sm:w-auto px-4 py-2 rounded-full border border-black/15 bg-white text-sm focus:outline-none"
             >
-              <option value="">All statuses</option>
-              {STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
+              <option value="">All active</option>
+              {CURRENT_STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
             </select>
           </label>
-        </div>
+        )}
       </div>
 
       {loading ? (
@@ -249,11 +285,12 @@ export default function AdminOrders() {
         </div>
       ) : (
         <p className="mt-12 text-center text-black/40">
-          No orders{filter ? ` with status "${filter.replace(/_/g, ' ')}"` : ''}
+          No {tab === 'history' ? 'delivered orders' : 'current orders'}
+          {tab === 'current' && filter ? ` with status "${filter.replace(/_/g, ' ')}"` : ''}
           {dateFrom || dateTo ? (
             <>
               {' '}between {dateFrom ? formatDate(`${dateFrom}T00:00:00`) : 'the beginning'} and{' '}
-              {dateTo ? formatDate(`${dateTo}T00:00:00`) : 'now'} — clear the date range to see all orders.
+              {dateTo ? formatDate(`${dateTo}T00:00:00`) : 'now'} — clear the date range to see more.
             </>
           ) : (
             '.'
