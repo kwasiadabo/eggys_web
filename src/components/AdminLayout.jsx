@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Receipt, Bike, Flag, Settings, FileBarChart2,
-  Wallet, PackageSearch, IdCard, Users, ChevronRight,
+  Wallet, PackageSearch, IdCard, Users, ChevronRight, MessageCircleQuestion,
 } from 'lucide-react';
 import api from '../lib/api';
 import { useAuthStore } from '../store/authStore';
@@ -15,6 +15,7 @@ const MENU = [
   { to: '/admin/orders', label: 'Orders', icon: Receipt, countKey: 'orders' },
   { to: '/admin/delivery', label: 'Delivery', icon: Bike },
   { to: '/admin/issues', label: 'Issues', icon: Flag, countKey: 'issues' },
+  { to: '/admin/questions', label: 'Questions', icon: MessageCircleQuestion, countKey: 'questions' },
 ];
 
 // Polls a cheap count endpoint (not the full dashboard) and reports increases
@@ -129,6 +130,10 @@ export default function AdminLayout() {
     }),
     issues: usePolledCount('/admin/issues/open-count', isAdmin, (diff) => {
       toast(diff === 1 ? 'New issue reported!' : `${diff} new issues reported!`, 'info');
+      if (document.hidden) startTitleFlash();
+    }),
+    questions: usePolledCount('/admin/questions/open-count', isAdmin, (diff) => {
+      toast(diff === 1 ? 'New question received!' : `${diff} new questions received!`, 'info');
       if (document.hidden) startTitleFlash();
     }),
   };

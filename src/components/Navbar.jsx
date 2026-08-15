@@ -48,6 +48,7 @@ export default function Navbar() {
               Cart <span className="ml-1 text-green">({count})</span>
             </NavLink>
           )}
+          <NavLink to="/ask" className={navLinkClass}>Ask a Question</NavLink>
           {user && (
             <NavLink to="/report-issue" className={navLinkClass}>Report Issue</NavLink>
           )}
@@ -106,6 +107,7 @@ export default function Navbar() {
               Cart <span className="ml-1 text-green">({count})</span>
             </NavLink>
           )}
+          <NavLink to="/ask" onClick={closeMenu} className={mobileNavLinkClass}>Ask a Question</NavLink>
           {user && (
             <NavLink to="/report-issue" onClick={closeMenu} className={mobileNavLinkClass}>Report Issue</NavLink>
           )}

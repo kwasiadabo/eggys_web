@@ -104,6 +104,11 @@ export default function Footer() {
 							</Link>
 						</li>
 						<li>
+							<Link to="/ask" className="hover:text-green transition-colors">
+								Ask a Question
+							</Link>
+						</li>
+						<li>
 							<Link to="/rider" className="hover:text-green transition-colors">
 								Rider Portal
 							</Link>

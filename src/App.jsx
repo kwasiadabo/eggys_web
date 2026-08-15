@@ -21,6 +21,7 @@ import Login from './pages/Login';
 import RiderPortal from './pages/RiderPortal';
 import RiderReport from './pages/RiderReport';
 import ReportIssue from './pages/ReportIssue';
+import AskQuestion from './pages/AskQuestion';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -30,6 +31,7 @@ import AdminRiders from './pages/admin/AdminRiders';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminDeliveryFees from './pages/admin/AdminDeliveryFees';
 import AdminIssues from './pages/admin/AdminIssues';
+import AdminQuestions from './pages/admin/AdminQuestions';
 import AdminOrdersReport from './pages/admin/AdminOrdersReport';
 import AdminRiderDeliveriesReport from './pages/admin/AdminRiderDeliveriesReport';
 import AdminSalesReport from './pages/admin/AdminSalesReport';
@@ -75,6 +77,7 @@ export default function App() {
           <Route path="/rider" element={<RiderPortal />} />
           <Route path="/rider/report" element={<RiderReport />} />
           <Route path="/report-issue" element={<ReportIssue />} />
+          <Route path="/ask" element={<AskQuestion />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<AdminProducts />} />
@@ -84,6 +87,7 @@ export default function App() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="delivery-fees" element={<AdminDeliveryFees />} />
             <Route path="issues" element={<AdminIssues />} />
+            <Route path="questions" element={<AdminQuestions />} />
             <Route path="reports/orders" element={<AdminOrdersReport />} />
             <Route path="reports/sales" element={<AdminSalesReport />} />
             <Route path="reports/product-trend" element={<AdminProductSalesTrend />} />
