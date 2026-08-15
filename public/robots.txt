@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /rider
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /favorites
+Disallow: /login
+
+Sitemap: https://eggys.store/sitemap.xml
