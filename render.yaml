@@ -1,4 +1,13 @@
 routes:
+  # Static files that must be served as-is, not swallowed by the SPA
+  # catch-all below (Render evaluates routes top-to-bottom, first match wins).
+  - type: rewrite
+    source: /sitemap.xml
+    destination: /sitemap.xml
+  - type: rewrite
+    source: /robots.txt
+    destination: /robots.txt
+
   # SPA fallback — client-side routes (e.g. /rider, /checkout/complete,
   # /track-order) must resolve to index.html so React Router can take over.
   # Only takes effect if this service is Blueprint-managed; for an existing
