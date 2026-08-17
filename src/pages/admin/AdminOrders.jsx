@@ -216,13 +216,17 @@ export default function AdminOrders() {
                     <p className="text-xs text-black/40 mt-0.5">{formatDate(order.createdAt)}</p>
                   </td>
                   <td className="px-3 py-3">
-                    <ul className="space-y-0.5">
-                      {order.OrderItems?.map((item) => (
-                        <li key={item.id} className="text-xs">
-                          {item.quantity}× {item.Product?.name}
-                        </li>
-                      ))}
-                    </ul>
+                    {order.OrderItems?.length ? (
+                      <ul className="space-y-0.5">
+                        {order.OrderItems.map((item) => (
+                          <li key={item.id} className="text-xs">
+                            {item.quantity}× {item.Product?.name}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-xs text-red-600">⚠ No items on this order</p>
+                    )}
                     <p className="text-xs text-green mt-1.5 flex items-center gap-1">
                       <MapPin size={12} strokeWidth={2} className="shrink-0" /> {order.shippingAddress || 'No address'}
                     </p>
